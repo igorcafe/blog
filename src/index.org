@@ -2,3 +2,4 @@
 
 * Artigos
 - [[file:go_122_e_o_novo_router.org][Go 1.22 e o novo router HTTP]]
+- [[file:go_desmitificando_channels_1.org][7 vantagens da linguagem Go]]

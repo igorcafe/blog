@@ -1,9 +1,8 @@
-:PROPERTIES:
-:ID:       69613e31-731b-414e-968f-d72ee2a3a016
-:END:
 #+title: Go 1.22 e o novo router HTTP
 
 * Go 1.22 e o novo router HTTP
+
+Publicado em 07/02/2024.
 
 ** Introdução
 
