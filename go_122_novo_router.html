@@ -8,21 +8,21 @@
 <title>Go 1.22 e o novo router HTTP</title>
 <meta name="generator" content="Org Mode" />
 <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+					 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<div id="preamble" class="status">
+<nav><a href="/">Inicio</a></nav>
+</div>
 <div id="content" class="content">
-
-<div id="outline-container-org0bf0d68" class="outline-2">
-<h2 id="org0bf0d68">Go 1.22 e o novo router HTTP</h2>
-<div class="outline-text-2" id="text-org0bf0d68">
+<h1 class="title">Go 1.22 e o novo router HTTP</h1>
 <p>
 Publicado em 07/02/2024.
 </p>
-</div>
 
-<div id="outline-container-org60c0a04" class="outline-3">
-<h3 id="org60c0a04">Introdução</h3>
-<div class="outline-text-3" id="text-org60c0a04">
+<div id="outline-container-org8e9519b" class="outline-2">
+<h2 id="org8e9519b">Introdução</h2>
+<div class="outline-text-2" id="text-org8e9519b">
 <p>
 O <code>http.ServeMux</code> do Go ganhou novas features muito aguardadas pelos
 desenvolvedores, e como sempre, essas features são retrocompatíveis.
@@ -71,9 +71,9 @@ Go 1.
 </div>
 </div>
 
-<div id="outline-container-org911d752" class="outline-3">
-<h3 id="org911d752">1. Como funciona o <code>http.ServeMux</code></h3>
-<div class="outline-text-3" id="text-org911d752">
+<div id="outline-container-org2ffd204" class="outline-2">
+<h2 id="org2ffd204">1. Como funciona o <code>http.ServeMux</code></h2>
+<div class="outline-text-2" id="text-org2ffd204">
 <p>
 O <code>ServeMux</code> tem um comportamento diferente da maioria dos routers.
 </p>
@@ -144,9 +144,9 @@ http.Handle("/users/books/", ...)
 </div>
 </div>
 
-<div id="outline-container-org8a5d277" class="outline-3">
-<h3 id="org8a5d277">2. Entendendo o match com base no método HTTP</h3>
-<div class="outline-text-3" id="text-org8a5d277">
+<div id="outline-container-orgc4d8e50" class="outline-2">
+<h2 id="orgc4d8e50">2. Entendendo o match com base no método HTTP</h2>
+<div class="outline-text-2" id="text-orgc4d8e50">
 <p>
 O comportamento das funções <code>Handle</code> e <code>HandleFunc</code> vai se manter igual para
 códigos existentes por conta da retrocompatibilidade da linguagem, então se você
@@ -172,9 +172,9 @@ http.HandleFunc("DELETE /users", ...)
 </div>
 </div>
 
-<div id="outline-container-org48ae347" class="outline-3">
-<h3 id="org48ae347">3. Utilizando variáveis de path</h3>
-<div class="outline-text-3" id="text-org48ae347">
+<div id="outline-container-org2663c5c" class="outline-2">
+<h2 id="org2663c5c">3. Utilizando variáveis de path</h2>
+<div class="outline-text-2" id="text-org2663c5c">
 <p>
 Podemos capturar o valor de uma variável de path usando o <code>PathValue</code>.
 </p>
@@ -189,9 +189,9 @@ Podemos capturar o valor de uma variável de path usando o <code>PathValue</code
 </div>
 </div>
 
-<div id="outline-container-orgaec9a49" class="outline-3">
-<h3 id="orgaec9a49">4. Utilizando matches exatos</h3>
-<div class="outline-text-3" id="text-orgaec9a49">
+<div id="outline-container-orgbd58638" class="outline-2">
+<h2 id="orgbd58638">4. Utilizando matches exatos</h2>
+<div class="outline-text-2" id="text-orgbd58638">
 <p>
 Ao utilizar o <code>{$}</code> indicamos que um handler terminado em barra deve somente
 bater com aquele path, e não com qualquer path com aquele prefixo. 
@@ -212,9 +212,9 @@ http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 </div>
 </div>
 
-<div id="outline-container-org883fa3a" class="outline-3">
-<h3 id="org883fa3a">Conclusão</h3>
-<div class="outline-text-3" id="text-org883fa3a">
+<div id="outline-container-org254ae40" class="outline-2">
+<h2 id="org254ae40">Conclusão</h2>
+<div class="outline-text-2" id="text-org254ae40">
 <p>
 Apesar de simples, essa foi uma mudança bem importante na stdlib do Go, tendo em
 vista que é uma linguagem muito utilizada para desenvolver servidores Web. 
@@ -225,7 +225,6 @@ Mas é claro que essas foram só algumas das muitas novidades do Go 1.22 e
 pretendo falar de outras que foram bem expressivas, como no <code>for</code> loop, pacote
 <code>rand</code>, e outros em próximos artigos. 
 </p>
-</div>
 </div>
 </div>
 </div>
