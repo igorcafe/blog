@@ -1,0 +1,3 @@
+* Example link
+
+[[file:some_page.org][Some page!]]
