@@ -13,7 +13,6 @@
 			 :with-creator t
 			 :with-toc nil
 			 :time-stamp-file nil
-			 :with-vars
              :publishing-function 'org-html-publish-to-html)))
 
 (org-publish-all t)
