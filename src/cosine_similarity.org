@@ -1,0 +1,48 @@
+#+title: Cosine Similarity
+
+Cosine similarity is used to measure the similarity between two vectors.
+It's defined as the cosine of the angle formed by two vectors.
+The greater the angle, the smaller the cosine.
+
+Here is how you can compute the cosine similarity of two vectors \(\vec{A}\) and \(\vec{B}\):
+\begin{equation}
+\text{Cosine Similarity} =
+\frac{{\vec {A}}\cdot {\vec {B}}}
+     {\|{\vec {A}}\|_{2}\|{\vec {B}}\|_{2}}
+\end{equation}
+
+# {\displaystyle sim_{cos}({\vec {x}},{\vec {y}})=
+# {\frac {{\vec {x}}\cdot {\vec {y}}}
+# {\|{\vec {x}}\|_{2}\|{\vec {y}}\|_{2}}}} 
+
+# \begin{equation}
+# \text{Cosine Similarity} =
+# \frac{\sum_{i=1}^{n} A_i B_i}
+# {\sqrt{\sum_{i=1}^{n} A_i^2} \sqrt{\sum_{i=1}^{n} B_i^2}}
+# \end{equation}
+
+# Given the phrases:
+# 1. "love you"
+# 2. "you love"
+# 3. "love love"
+# 4. "you"
+
+# We can represent them as:
+# | love | you | angle |
+# |------+-----+-------|
+# |    1 |   1 |    45 |
+# |    1 |   1 |    45 |
+# |    2 |   0 |     0 |
+# |    0 |   1 |    90 |
+
+# If we compare first and second phrases, the angle between them is 0, and cos 0
+# is 1, so the cosine similarity is 1.
+
+# If we compare first and third phrases, the angle between them is 45, and cos 45
+# is 0.71.
+
+# If we compare second and forth phrases, the angle between them is also 45, so
+# 0.71.
+
+# If we compare third and forth, their angle is 90, and cos 90 is 0.
+# Make sense since there is no similar word between the phrases.

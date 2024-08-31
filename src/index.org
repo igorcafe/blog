@@ -1,13 +1,55 @@
 #+title: Igor Melo
 #+options: title:nil
 
-* Sobre mim
+* About me
 - [[https://www.linkedin.com/in/igoracmelo/][LinkedIn]]
 - [[https://github.com/igorcafe][GitHub]]
 
-* Artigos
-- [[file:go_122_novo_router.org][Go 1.22 e o novo router HTTP]]
-- [[file:go_desmistificando_channels_1.org][Go: Desmistificando channels #1 - Conceito e sintaxe]]
+* Concepts
+(WIP) A wiki-like, non-hierarchical and connected structure of concepts I've been studying.
 
-* Conceitos
-Em construção.
+
+# - Agile
+# - Build-Measure-Learn (Lean Startup)
+# - Continuous Delivery
+- [[file:cosine_similarity.org][Cosine Similarity]]
+# - Customer Acquisition Cost
+# - Customer Development
+# - Definition of Done
+# - Definition of Ready
+# - Definition of Workflow
+# - Emacs
+# - Embedding
+# - EXWM
+# - Fine-tuning
+# - Go (Programming Language)
+# - Ideal Customer Profile
+# - Inbound Marketing
+# - Kanban
+# - K-means
+# - Lean Manufacturing
+# - Lean Startup
+# - Lookalike Marketing
+# - Linux
+# - Marketing
+# - Minimum Lovable Product
+# - Minimum Marketable Product
+# - Minimum Viable Product
+# - MRR
+# - Nix (Build System)
+# - Nix (Operating System)
+# - Nix (Package Manager)
+# - Nix (Programming Language)
+# - Outbound Marketing
+# - Org Mode
+# - Pivot
+# - PostgreSQL
+# - Pull System
+# - Retrieval-Augmented Generation
+# - Sales Development Representative
+# - SQLite
+# - Scrum
+# - Upsell
+# - Vector Database
+# - Venture
+# - Venture Capital
