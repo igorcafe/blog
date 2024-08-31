@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Go 1.22 e o novo router HTTP</title>
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+</head>
+<body>
+<div id="content" class="content">
+
+<div id="outline-container-orgd4af4c7" class="outline-2">
+<h2 id="orgd4af4c7">Go 1.22 e o novo router HTTP</h2>
+<div class="outline-text-2" id="text-orgd4af4c7">
+</div>
+<div id="outline-container-orgf9aaecc" class="outline-3">
+<h3 id="orgf9aaecc">Introdução</h3>
+<div class="outline-text-3" id="text-orgf9aaecc">
+<p>
+O <code>http.ServeMux</code> do Go ganhou novas features muito aguardadas pelos
+desenvolvedores, e como sempre, essas features são retrocompatíveis.
+</p>
+
+<p>
+Em resumo, as features são:
+</p>
+
+<ul class="org-ul">
+<li><b>Match com base no método HTTP</b></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-go">http.Handle("GET /users", ...)
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><b>Variavéis no path da requisição</b></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-go">http.Handle("GET /users/{id}", ...)
+</pre>
+</div>
+
+<ul class="org-ul">
+<li><b>Match exato de paths terminados em barra</b></li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-go">// match para qualquer path iniciado com /static/
+http.Handle("GET /static/", ...)
+
+// match somente GET /static/
+http.Handle("GET /static/{$}", ...)
+</pre>
+</div>
+
+<p>
+Essas mudanças vão reduzir bastante a necessidade de utilizar bibliotecas de
+routers, e como vai para a stdlib, vai ter a garantia de compatibilidade do
+Go 1.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orge6a7388" class="outline-3">
+<h3 id="orge6a7388">1. Como funciona o <code>http.ServeMux</code></h3>
+<div class="outline-text-3" id="text-orge6a7388">
+<p>
+O <code>ServeMux</code> tem um comportamento diferente da maioria dos routers.
+</p>
+
+<p>
+<b>Caminhos terminados em barra são como pastas</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">http.Handle("/assets/", ...)
+</pre>
+</div>
+
+<p>
+Esse handler processa qualquer requisição com prefixo <code>/assets/</code>, como:
+</p>
+
+<ul class="org-ul">
+<li><code>GET /assets/</code></li>
+<li><code>GET /assets/img/img.png</code></li>
+<li><code>DELETE /assets/abcd</code></li>
+</ul>
+
+<p>
+<b>O match é feito com o path exato se não for terminado em barra</b>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">http.Handle("/", ...)
+http.Handle("/assets", ...)
+</pre>
+</div>
+
+<p>
+Nesse caso o segundo pattern não termina em barra, então só requisições para
+exatamente <code>/assets</code> vão ser processadas por esse handler, e qualquer outra será
+processada pelo primeiro handler. 
+</p>
+
+<p>
+Obs.: O caminho <code>/</code> dá match em qualquer requisição que não dê match em outro
+handler, então ele é geralmente usado para a página raiz <b>e</b> página de not
+found. 
+</p>
+
+<p>
+<b>O match é feito com o path mais similar</b>
+</p>
+
+<p>
+Se você tiver:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">http.Handle("/users/", ...)
+http.Handle("/users/123", ...)
+http.Handle("/users/books/", ...)
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>Uma requisição para <code>/users/</code> vai cair no primeiro handler.</li>
+<li>Uma requisição para <code>/users/123</code> vai cair no segundo handler.</li>
+<li>Uma requisição para <code>/users/1234</code> vai cair no primeiro handler.</li>
+<li>Uma requisição para <code>/users/books/123</code> vai cair no terceiro handler.</li>
+<li>Uma requisição para <code>/users/a/b/c/d</code> também cai no primeiro handler</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgab1d908" class="outline-3">
+<h3 id="orgab1d908">2. Entendendo o match com base no método HTTP</h3>
+<div class="outline-text-3" id="text-orgab1d908">
+<p>
+O comportamento das funções <code>Handle</code> e <code>HandleFunc</code> vai se manter igual para
+códigos existentes por conta da retrocompatibilidade da linguagem, então se você
+não especificar um método HTTP, seu handler vai continuar dando match em
+qualquer método. 
+</p>
+
+<p>
+Obs.: Um handler para o método GET vai também bater para requisições do método
+HEAD. 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">// GET /users
+// HEAD /users
+http.HandleFunc("GET /users", ...)
+
+
+// somente DELETE /users
+http.HandleFunc("DELETE /users", ...)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc904eb3" class="outline-3">
+<h3 id="orgc904eb3">3. Utilizando variáveis de path</h3>
+<div class="outline-text-3" id="text-orgc904eb3">
+<p>
+Podemos capturar o valor de uma variável de path usando o <code>PathValue</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">http.HandleFunc("GET /users/{id}", func(w http.ResponseWriter, r *http.Request) {
+    id := r.PathValue("id")
+    ...
+})
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcd82fec" class="outline-3">
+<h3 id="orgcd82fec">4. Utilizando matches exatos</h3>
+<div class="outline-text-3" id="text-orgcd82fec">
+<p>
+Ao utilizar o <code>{$}</code> indicamos que um handler terminado em barra deve somente
+bater com aquele path, e não com qualquer path com aquele prefixo. 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-go">// redirecionar um request de / para /home
+http.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
+    http.Redirect(w, r, "/home")
+})
+
+// qualquer outro path que não de match em outro handler vai dar um not found
+http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+    http.NotFound(w, r)
+})
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgdc05747" class="outline-3">
+<h3 id="orgdc05747">Conclusão</h3>
+<div class="outline-text-3" id="text-orgdc05747">
+<p>
+Apesar de simples, essa foi uma mudança bem importante na stdlib do Go, tendo em
+vista que é uma linguagem muito utilizada para desenvolver servidores Web. 
+</p>
+
+<p>
+Mas é claro que essas foram só algumas das muitas novidades do Go 1.22 e
+pretendo falar de outras que foram bem expressivas, como no <code>for</code> loop, pacote
+<code>rand</code>, e outros em próximos artigos. 
+</p>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
