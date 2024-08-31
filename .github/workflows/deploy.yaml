@@ -8,9 +8,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Publish Org Files
-      uses: maker2413/OrgRoamPublish@v1.0.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+  
+      - name: Publish Org Files
+        uses: maker2413/OrgRoamPublish@v1.0.0
