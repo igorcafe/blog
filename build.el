@@ -9,6 +9,7 @@
              :base-directory "./src"
              :publishing-directory "./public"
 			 :with-author nil
+			 :with-title nil
 			 :section-numbers nil
 			 :with-creator t
 			 :with-toc nil
