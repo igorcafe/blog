@@ -1,5 +1,7 @@
 (require 'ox-publish)
 
+(setq org-html-validation-link nil)
+
 (setq org-publish-project-alist
       (list
        (list "igormelo.org"
@@ -11,6 +13,7 @@
 			 :with-creator t
 			 :with-toc nil
 			 :time-stamp-file nil
+			 :with-vars
              :publishing-function 'org-html-publish-to-html)))
 
 (org-publish-all t)
