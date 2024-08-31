@@ -1,3 +1,0 @@
-* Some page!
-
-[[file:index.org][Home]]

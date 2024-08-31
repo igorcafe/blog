@@ -1,10 +1,8 @@
 #+title: Go 1.22 e o novo router HTTP
 
-* Go 1.22 e o novo router HTTP
-
 Publicado em 07/02/2024.
 
-** Introdução
+* Introdução
 
 O =http.ServeMux= do Go ganhou novas features muito aguardadas pelos
 desenvolvedores, e como sempre, essas features são retrocompatíveis.
@@ -37,7 +35,7 @@ Essas mudanças vão reduzir bastante a necessidade de utilizar bibliotecas de
 routers, e como vai para a stdlib, vai ter a garantia de compatibilidade do
 Go 1.
 
-** 1. Como funciona o =http.ServeMux=
+* 1. Como funciona o =http.ServeMux=
 
 O =ServeMux= tem um comportamento diferente da maioria dos routers.
 
@@ -84,7 +82,7 @@ http.Handle("/users/books/", ...)
 - Uma requisição para =/users/books/123= vai cair no terceiro handler.
 - Uma requisição para =/users/a/b/c/d= também cai no primeiro handler
 
-** 2. Entendendo o match com base no método HTTP
+* 2. Entendendo o match com base no método HTTP
 
 O comportamento das funções =Handle= e =HandleFunc= vai se manter igual para
 códigos existentes por conta da retrocompatibilidade da linguagem, então se você
@@ -104,7 +102,7 @@ http.HandleFunc("GET /users", ...)
 http.HandleFunc("DELETE /users", ...)
 #+end_src
 
-** 3. Utilizando variáveis de path
+* 3. Utilizando variáveis de path
 
 Podemos capturar o valor de uma variável de path usando o =PathValue=.
 
@@ -115,7 +113,7 @@ http.HandleFunc("GET /users/{id}", func(w http.ResponseWriter, r *http.Request) 
 })
 #+end_src
 
-** 4. Utilizando matches exatos
+* 4. Utilizando matches exatos
 
 Ao utilizar o ={$}= indicamos que um handler terminado em barra deve somente
 bater com aquele path, e não com qualquer path com aquele prefixo. 
@@ -132,7 +130,7 @@ http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 })
 #+end_src
 
-** Conclusão
+* Conclusão
 
 Apesar de simples, essa foi uma mudança bem importante na stdlib do Go, tendo em
 vista que é uma linguagem muito utilizada para desenvolver servidores Web. 

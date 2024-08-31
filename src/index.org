@@ -1,5 +1,13 @@
-#+title: Igor Melo - Início
+#+title: Igor Melo
+#+options: title:nil
+
+* Sobre mim
+- [[https://www.linkedin.com/in/igoracmelo/][LinkedIn]]
+- [[https://github.com/igorcafe][GitHub]]
 
 * Artigos
-- [[file:go_122_e_o_novo_router.org][Go 1.22 e o novo router HTTP]]
-- [[file:go_desmitificando_channels_1.org][7 vantagens da linguagem Go]]
+- [[file:go_122_novo_router.org][Go 1.22 e o novo router HTTP]]
+- [[file:go_desmistificando_channels_1.org][Go: Desmistificando channels #1 - Conceito e sintaxe]]
+
+* Conceitos
+Em construção.
