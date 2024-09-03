@@ -27,7 +27,7 @@
 			 ;; 										  (format "- [[%s][%s]]"
 			 ;; 												  (car link) (cdr link)))
 			 ;; 										list "\n")))
-			 :html-preamble "<nav><a href=\"/\">Inicio</a></nav>"
+			 :html-preamble "<nav><a href=\"/\">Home</a></nav>"
 			 ;; :sitemap-title "Igor Melo"
 			 ;; :sitemap-filename "index.org"
 			 :with-title t
