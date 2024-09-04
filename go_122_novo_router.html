@@ -12,7 +12,9 @@
 </head>
 <body>
 <div id="preamble" class="status">
-<nav><a href="/">Home</a></nav>
+<header><nav><a href="/">Home</a>
+<a href="https://www.linkedin.com/in/igoracmelo/">LinkedIn</a>
+<a href="https://github.com/igorcafe">GitHub</a></nav></header>
 </div>
 <div id="content" class="content">
 <h1 class="title">Go 1.22 e o novo router HTTP</h1>
@@ -20,9 +22,9 @@
 Publicado em 07/02/2024.
 </p>
 
-<div id="outline-container-orgddc9cf7" class="outline-2">
-<h2 id="orgddc9cf7">Introdução</h2>
-<div class="outline-text-2" id="text-orgddc9cf7">
+<div id="outline-container-org3187fe0" class="outline-2">
+<h2 id="org3187fe0">Introdução</h2>
+<div class="outline-text-2" id="text-org3187fe0">
 <p>
 O <code>http.ServeMux</code> do Go ganhou novas features muito aguardadas pelos
 desenvolvedores, e como sempre, essas features são retrocompatíveis.
@@ -71,9 +73,9 @@ Go 1.
 </div>
 </div>
 
-<div id="outline-container-orgcf4986c" class="outline-2">
-<h2 id="orgcf4986c">1. Como funciona o <code>http.ServeMux</code></h2>
-<div class="outline-text-2" id="text-orgcf4986c">
+<div id="outline-container-org427a59b" class="outline-2">
+<h2 id="org427a59b">1. Como funciona o <code>http.ServeMux</code></h2>
+<div class="outline-text-2" id="text-org427a59b">
 <p>
 O <code>ServeMux</code> tem um comportamento diferente da maioria dos routers.
 </p>
@@ -144,9 +146,9 @@ http.Handle("/users/books/", ...)
 </div>
 </div>
 
-<div id="outline-container-org006e567" class="outline-2">
-<h2 id="org006e567">2. Entendendo o match com base no método HTTP</h2>
-<div class="outline-text-2" id="text-org006e567">
+<div id="outline-container-orgd283392" class="outline-2">
+<h2 id="orgd283392">2. Entendendo o match com base no método HTTP</h2>
+<div class="outline-text-2" id="text-orgd283392">
 <p>
 O comportamento das funções <code>Handle</code> e <code>HandleFunc</code> vai se manter igual para
 códigos existentes por conta da retrocompatibilidade da linguagem, então se você
@@ -172,9 +174,9 @@ http.HandleFunc("DELETE /users", ...)
 </div>
 </div>
 
-<div id="outline-container-org4ffcd1d" class="outline-2">
-<h2 id="org4ffcd1d">3. Utilizando variáveis de path</h2>
-<div class="outline-text-2" id="text-org4ffcd1d">
+<div id="outline-container-org5b75c21" class="outline-2">
+<h2 id="org5b75c21">3. Utilizando variáveis de path</h2>
+<div class="outline-text-2" id="text-org5b75c21">
 <p>
 Podemos capturar o valor de uma variável de path usando o <code>PathValue</code>.
 </p>
@@ -189,9 +191,9 @@ Podemos capturar o valor de uma variável de path usando o <code>PathValue</code
 </div>
 </div>
 
-<div id="outline-container-org95f1ca5" class="outline-2">
-<h2 id="org95f1ca5">4. Utilizando matches exatos</h2>
-<div class="outline-text-2" id="text-org95f1ca5">
+<div id="outline-container-orgfe8a816" class="outline-2">
+<h2 id="orgfe8a816">4. Utilizando matches exatos</h2>
+<div class="outline-text-2" id="text-orgfe8a816">
 <p>
 Ao utilizar o <code>{$}</code> indicamos que um handler terminado em barra deve somente
 bater com aquele path, e não com qualquer path com aquele prefixo. 
@@ -212,9 +214,9 @@ http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 </div>
 </div>
 
-<div id="outline-container-org66307c2" class="outline-2">
-<h2 id="org66307c2">Conclusão</h2>
-<div class="outline-text-2" id="text-org66307c2">
+<div id="outline-container-orgff1b23b" class="outline-2">
+<h2 id="orgff1b23b">Conclusão</h2>
+<div class="outline-text-2" id="text-orgff1b23b">
 <p>
 Apesar de simples, essa foi uma mudança bem importante na stdlib do Go, tendo em
 vista que é uma linguagem muito utilizada para desenvolver servidores Web. 
