@@ -11,3 +11,7 @@ h2 {
 h3 {
 	font-size: 26px;
 }
+
+nav {
+	justify-content: unset;
+}

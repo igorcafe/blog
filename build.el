@@ -7,6 +7,17 @@
 	  org-html-head "<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\" />
 					 <link rel=\"stylesheet\" href=\"style.css\" />")
 
+(setq navbar-items (mapconcat
+					(lambda (entry)
+					  (format "<a href=\"%s\">%s</a>" (cdr entry) (car entry)))
+					'(("Home" . "/")
+					  ("LinkedIn" . "https://www.linkedin.com/in/igoracmelo/")
+					  ("GitHub" . "https://github.com/igorcafe"))
+					"\n"))
+
+;;(setq navbar (concat "<nav>" navbar-items "</nav>"))
+(setq header (concat "<header><nav>" navbar-items "</nav></header>"))
+
 (setq org-publish-project-alist
       (list
        (list "igormelo.org"
@@ -27,7 +38,7 @@
 			 ;; 										  (format "- [[%s][%s]]"
 			 ;; 												  (car link) (cdr link)))
 			 ;; 										list "\n")))
-			 :html-preamble "<nav><a href=\"/\">Home</a></nav>"
+			 :html-preamble header
 			 ;; :sitemap-title "Igor Melo"
 			 ;; :sitemap-filename "index.org"
 			 :with-title t

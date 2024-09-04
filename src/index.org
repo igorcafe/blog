@@ -1,10 +1,6 @@
 #+title: Igor Melo
 #+options: title:nil
 
-* About me
-- [[https://www.linkedin.com/in/igoracmelo/][LinkedIn]]
-- [[https://github.com/igorcafe][GitHub]]
-
 * Concepts
 (WIP) A wiki-like, non-hierarchical and connected structure of concepts I've been studying.
 
