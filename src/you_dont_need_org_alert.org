@@ -1,0 +1,131 @@
+#+title: You don't need org-alert, Emacs has it built-in (kinda)
+
+TL;DR: jump to [[id:3c1a543f-d037-448e-9c62-4cde72e71933][the full config]].
+
+I tried using org-alert and org-wild-notifier, but both didn't work very well
+with me.
+
+org-alert was the one that worked best, but sometimes it didn't notify,
+or it notified after the schedule, and some other errors.
+
+And then I found out that for what I needed, 20 lines of elisp were enough to
+replace org-alert.
+
+* Meet appt
+
+appt is a tool for warning you about appointments, which by default is based
+on the Emacs diary, but you can feed it with your org agenda entries, and it
+will warn about your schedules and deadlines.
+
+Let's first configure it:
+
+#+begin_src emacs-lisp
+  (setq appt-message-warning-time 60) ;; start warning 60 minutes before appointments
+  (setq appt-display-interval 1) ;; display warning every minute
+  (appt-activate t) ;; starts the appt "mode"
+#+end_src
+
+And to feed it your org agenda, do:
+
+#+begin_src emacs-lisp
+  ;; `t' here means "clear whatever is in appt before adding"
+  (org-agenda-to-appt t)
+#+end_src
+
+This will feed once, and won't update if you change the agenda. Later on I will
+share the full config.
+
+appt itself doesn't show desktop notifications, only a window inside Emacs
+(which may be enough for you).
+
+* Desktop notifications
+
+Emacs has built-in support for sending desktop notifications.
+
+Basically you can do:
+
+#+begin_src emacs-lisp
+  (notifications-notify
+   :title "attention!"
+   :body "you have a meeting in 5 minutes"
+   :urgency 'critical)
+#+end_src
+
+In KDE it looks like this:
+
+#TODO: pic here
+
+You can check the docs on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Notifications.html][desktop notifications]] for more details.
+
+Now here is the cool thing: appt has a variable named
+=appt-disp-window-function=, which by default is set to the function that shows
+the window inside Emacs.
+
+So to get desktop notifications about your agenda events, you only need to set
+it to whatever you prefer:
+
+#+begin_src emacs-lisp
+  (setq appt-disp-window-function
+        (lambda (remaining new-time msg)
+          (notifications-notify
+           :title (message "In %s minutes" remaining)
+           :body msg
+           :urgency 'critical)))
+#+end_src
+
+Finally, we need to update appt everytime we change our agenda items.
+I couldn't find a specific hook for that, so if you have any suggestions please
+let me know:
+
+#+begin_src emacs-lisp
+  ;; update appt when agenda is opened
+  (add-hook 'org-agenda-after-show-hook
+            (lambda ()
+              (org-agenda-to-appt t)))
+
+  ;; update appt when any org file is saved
+  ;; here I could check if the file is an agenda file, but I don't think its necessary
+  (add-hook 'after-save-hook
+            (lambda ()
+              (when (eq major-mode 'org-mode)
+                (org-agenda-to-appt t))))
+#+end_src
+
+* The full config
+:PROPERTIES:
+:ID:       3c1a543f-d037-448e-9c62-4cde72e71933
+:END:
+
+#+begin_src emacs-lisp
+  (use-package emacs
+    :hook
+    ;; when agenda is opened and showed, refresh appt
+    ((org-agenda-after-show . (lambda ()
+                                (org-agenda-to-appt t)))
+
+    ;; when any org file changed, refresh appt
+     (after-save . (lambda ()
+                     (when (eq major-mode 'org-mode)
+                       (org-agenda-to-appt t)))))
+    :config
+    ;; start warning 60 minutes before the appointment
+    (setq appt-message-warning-time 60)
+    ;; warn me every 5 minutes
+    (setq appt-display-interval 5)
+    ;; custom function
+    (setq appt-disp-window-function
+          (lambda (remaining new-time msg)
+            ;; if you want to get notified inside a emacs window too, uncomment below
+            ;;(appt-disp-window remaining new-time msg)
+            (notifications-notify
+             :title
+             (message "In %s minutes" remaining)
+             :body
+             msg
+             ;; you might want to change it
+             :urgency
+             'critical)))
+    (appt-activate t))
+#+end_src
+
+Hope it's useful and feel free to add any suggestions.

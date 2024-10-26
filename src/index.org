@@ -1,6 +1,9 @@
 #+title: Igor Melo
 #+options: title:nil
 
+* Articles
+- [[file:you_dont_need_org_alert.org][You don't need org-alert, Emacs has it built-in (kinda)]]
+
 * Concepts
 (WIP) A wiki-like, non-hierarchical and connected structure of concepts I've been studying.
 

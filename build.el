@@ -1,4 +1,6 @@
 (require 'ox-publish)
+;; (package-install 'htmlize)
+;; (require 'htmlize)
 
 (setq org-export-with-broken-links t
 	  org-html-validation-link nil
