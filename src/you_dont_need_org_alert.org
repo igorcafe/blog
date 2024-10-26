@@ -53,7 +53,7 @@ Basically you can do:
 
 In KDE it looks like this:
 
-#TODO: pic here
+[[file:emacs_notification_example.png]]
 
 You can check the docs on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Notifications.html][desktop notifications]] for more details.
 
