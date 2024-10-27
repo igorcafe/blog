@@ -19,7 +19,7 @@
 <div id="content" class="content">
 <h1 class="title">You don't need org-alert, Emacs has it built-in (kinda)</h1>
 <p>
-TL;DR: jump to <a href="#orgc82c429">the full config</a>.
+<b>TL;DR</b>: jump to <a href="#orgacc5f75">the full config</a>.
 </p>
 
 <p>
@@ -37,13 +37,13 @@ And then I found out that for what I needed, 20 lines of elisp were enough to
 replace org-alert.
 </p>
 
-<div id="outline-container-org8fe91f5" class="outline-2">
-<h2 id="org8fe91f5">Meet appt</h2>
-<div class="outline-text-2" id="text-org8fe91f5">
+<div id="outline-container-orgdf5ac27" class="outline-2">
+<h2 id="orgdf5ac27">Meet appt</h2>
+<div class="outline-text-2" id="text-orgdf5ac27">
 <p>
 appt is a tool for warning you about appointments, which by default is based
 on the Emacs diary, but you can feed it with your org agenda entries, and it
-will warn about your schedules and deadlines.
+will warn you about your schedules and deadlines.
 </p>
 
 <p>
@@ -58,7 +58,7 @@ Let's first configure it:
 </div>
 
 <p>
-And to feed it your org agenda, do:
+And to feed it with your org agenda, do:
 </p>
 
 <div class="org-src-container">
@@ -79,15 +79,11 @@ appt itself doesn't show desktop notifications, only a window inside Emacs
 </div>
 </div>
 
-<div id="outline-container-org6d253fa" class="outline-2">
-<h2 id="org6d253fa">Desktop notifications</h2>
-<div class="outline-text-2" id="text-org6d253fa">
+<div id="outline-container-orgf2cfcf1" class="outline-2">
+<h2 id="orgf2cfcf1">Desktop notifications</h2>
+<div class="outline-text-2" id="text-orgf2cfcf1">
 <p>
-Emacs has built-in support for sending desktop notifications.
-</p>
-
-<p>
-Basically you can do:
+Emacs has built-in support for sending desktop notifications on Windows and Linux:
 </p>
 
 <div class="org-src-container">
@@ -99,11 +95,20 @@ Basically you can do:
 </div>
 
 <p>
+For Mac, an alternative is to use the function <code>org-show-notification</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(org-show-notification "attention! you have a meeting in 5 minutes")
+</pre>
+</div>
+
+<p>
 In KDE it looks like this:
 </p>
 
 
-<div id="orgd9d2f56" class="figure">
+<div id="org1102e18" class="figure">
 <p><img src="emacs_notification_example.png" alt="emacs_notification_example.png" />
 </p>
 </div>
@@ -136,7 +141,11 @@ it to whatever you prefer:
 <p>
 Finally, we need to update appt everytime we change our agenda items.
 I couldn't find a specific hook for that, so if you have any suggestions please
-let me know:
+let me know.
+</p>
+
+<p>
+Here is how I've done:
 </p>
 
 <div class="org-src-container">
@@ -156,9 +165,9 @@ let me know:
 </div>
 </div>
 
-<div id="outline-container-orgc82c429" class="outline-2">
-<h2 id="orgc82c429">The full config</h2>
-<div class="outline-text-2" id="text-orgc82c429">
+<div id="outline-container-orgacc5f75" class="outline-2">
+<h2 id="orgacc5f75">The full config</h2>
+<div class="outline-text-2" id="text-orgacc5f75">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(use-package emacs
   :hook
@@ -170,24 +179,27 @@ let me know:
    (after-save . (lambda ()
                    (when (eq major-mode 'org-mode)
                      (org-agenda-to-appt t)))))
+
   :config
   ;; start warning 60 minutes before the appointment
   (setq appt-message-warning-time 60)
+
   ;; warn me every 5 minutes
   (setq appt-display-interval 5)
-  ;; custom function
-  (setq appt-disp-window-function
+
+  (if (eq system-type 'darwin)
+      ;; for mac, use org-show-notification, which is more limited
+      (setq appt-disp-window-function
+            (lambda (remaining new-time msg)
+              (org-show-notification msg)))
+
+    ;; for other systems, use notifications-notify
+    (setq appt-disp-window-function
         (lambda (remaining new-time msg)
-          ;; if you want to get notified inside a emacs window too, uncomment below
-          ;;(appt-disp-window remaining new-time msg)
           (notifications-notify
-           :title
-           (message "In %s minutes" remaining)
-           :body
-           msg
-           ;; you might want to change it
-           :urgency
-           'critical)))
+           :title (format "In %s minutes" remaining)
+           :body msg
+           :urgency 'critical))))
   (appt-activate t))
 </pre>
 </div>
