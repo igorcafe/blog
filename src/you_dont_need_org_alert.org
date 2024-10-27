@@ -1,6 +1,6 @@
 #+title: You don't need org-alert, Emacs has it built-in (kinda)
 
-TL;DR: jump to [[id:3c1a543f-d037-448e-9c62-4cde72e71933][the full config]].
+*TL;DR*: jump to [[id:3c1a543f-d037-448e-9c62-4cde72e71933][the full config]].
 
 I tried using org-alert and org-wild-notifier, but both didn't work very well
 with me.
@@ -15,7 +15,7 @@ replace org-alert.
 
 appt is a tool for warning you about appointments, which by default is based
 on the Emacs diary, but you can feed it with your org agenda entries, and it
-will warn about your schedules and deadlines.
+will warn you about your schedules and deadlines.
 
 Let's first configure it:
 
@@ -25,7 +25,7 @@ Let's first configure it:
   (appt-activate t) ;; starts the appt "mode"
 #+end_src
 
-And to feed it your org agenda, do:
+And to feed it with your org agenda, do:
 
 #+begin_src emacs-lisp
   ;; `t' here means "clear whatever is in appt before adding"
@@ -40,15 +40,19 @@ appt itself doesn't show desktop notifications, only a window inside Emacs
 
 * Desktop notifications
 
-Emacs has built-in support for sending desktop notifications.
-
-Basically you can do:
+Emacs has built-in support for sending desktop notifications on Windows and Linux:
 
 #+begin_src emacs-lisp
   (notifications-notify
    :title "attention!"
    :body "you have a meeting in 5 minutes"
    :urgency 'critical)
+#+end_src
+
+For Mac, an alternative is to use the function =org-show-notification=:
+
+#+begin_src emacs-lisp
+  (org-show-notification "attention! you have a meeting in 5 minutes")
 #+end_src
 
 In KDE it looks like this:
@@ -75,7 +79,9 @@ it to whatever you prefer:
 
 Finally, we need to update appt everytime we change our agenda items.
 I couldn't find a specific hook for that, so if you have any suggestions please
-let me know:
+let me know.
+
+Here is how I've done:
 
 #+begin_src emacs-lisp
   ;; update appt when agenda is opened
@@ -107,24 +113,27 @@ let me know:
      (after-save . (lambda ()
                      (when (eq major-mode 'org-mode)
                        (org-agenda-to-appt t)))))
+
     :config
     ;; start warning 60 minutes before the appointment
     (setq appt-message-warning-time 60)
+
     ;; warn me every 5 minutes
     (setq appt-display-interval 5)
-    ;; custom function
-    (setq appt-disp-window-function
+
+    (if (eq system-type 'darwin)
+        ;; for mac, use org-show-notification, which is more limited
+        (setq appt-disp-window-function
+              (lambda (remaining new-time msg)
+                (org-show-notification msg)))
+
+      ;; for other systems, use notifications-notify
+      (setq appt-disp-window-function
           (lambda (remaining new-time msg)
-            ;; if you want to get notified inside a emacs window too, uncomment below
-            ;;(appt-disp-window remaining new-time msg)
             (notifications-notify
-             :title
-             (message "In %s minutes" remaining)
-             :body
-             msg
-             ;; you might want to change it
-             :urgency
-             'critical)))
+             :title (format "In %s minutes" remaining)
+             :body msg
+             :urgency 'critical))))
     (appt-activate t))
 #+end_src
 
