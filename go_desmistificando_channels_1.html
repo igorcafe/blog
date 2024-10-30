@@ -22,9 +22,9 @@
 Publicado em 19/12/2023.
 </p>
 
-<div id="outline-container-org7e07101" class="outline-2">
-<h2 id="org7e07101">Introdução</h2>
-<div class="outline-text-2" id="text-org7e07101">
+<div id="outline-container-org0e4ef7e" class="outline-2">
+<h2 id="org0e4ef7e">Introdução</h2>
+<div class="outline-text-2" id="text-org0e4ef7e">
 <p>
 Resolvi fazer esse texto porque no meu primeiro contato com channels eu não
 entendi muito bem como funcionava, daí eu sempre fugia para o <code>WaitGroup</code> ou
@@ -39,9 +39,9 @@ problemas comuns que você vai encontrar ao usá-los de forma errada.
 </div>
 </div>
 
-<div id="outline-container-org767cf13" class="outline-2">
-<h2 id="org767cf13">O que é e para que serve?</h2>
-<div class="outline-text-2" id="text-org767cf13">
+<div id="outline-container-org52dfdab" class="outline-2">
+<h2 id="org52dfdab">O que é e para que serve?</h2>
+<div class="outline-text-2" id="text-org52dfdab">
 <p>
 Channel, ou canal, é uma forma nativa do Go para comunicar e sincronizar
 goroutines.
@@ -67,9 +67,9 @@ iniciou</li>
 </div>
 </div>
 
-<div id="outline-container-orgea95933" class="outline-2">
-<h2 id="orgea95933">Criando e usando channels</h2>
-<div class="outline-text-2" id="text-orgea95933">
+<div id="outline-container-org330694b" class="outline-2">
+<h2 id="org330694b">Criando e usando channels</h2>
+<div class="outline-text-2" id="text-org330694b">
 <p>
 Para criar um channel, fazemos:
 </p>
@@ -140,9 +140,9 @@ Para receber do channel, fazemos:
 </div>
 </div>
 
-<div id="outline-container-orge071da2" class="outline-2">
-<h2 id="orge071da2">Por que não funciona?</h2>
-<div class="outline-text-2" id="text-orge071da2">
+<div id="outline-container-org6617dcb" class="outline-2">
+<h2 id="org6617dcb">Por que não funciona?</h2>
+<div class="outline-text-2" id="text-org6617dcb">
 <p>
 Se você rodar qualquer um dos códigos do exemplo anterior, vai acontecer isso:
 </p>
@@ -189,9 +189,9 @@ ver isso mais para frente.
 </div>
 </div>
 
-<div id="outline-container-orgfdc0239" class="outline-2">
-<h2 id="orgfdc0239">Usando channels corretamente</h2>
-<div class="outline-text-2" id="text-orgfdc0239">
+<div id="outline-container-org676a927" class="outline-2">
+<h2 id="org676a927">Usando channels corretamente</h2>
+<div class="outline-text-2" id="text-org676a927">
 <p>
 Para corrigir o problema do deadlock anterior, vamos criar outra goroutine que
 lê do channel, enquanto a goroutine <code>main</code> vai enviar para o channel.
@@ -246,9 +246,9 @@ x := &lt;-ch
 </div>
 </div>
 
-<div id="outline-container-org8084f1c" class="outline-2">
-<h2 id="org8084f1c">Conclusão</h2>
-<div class="outline-text-2" id="text-org8084f1c">
+<div id="outline-container-orgc12e2d1" class="outline-2">
+<h2 id="orgc12e2d1">Conclusão</h2>
+<div class="outline-text-2" id="text-orgc12e2d1">
 <p>
 Isso conclui a parte 1 dessa série, com o conceito básico de channels.  Na parte
 2 vamos ver um exemplo mais realístico de onde e como seria utilizado channels.
