@@ -19,7 +19,7 @@
 <div id="content" class="content">
 <h1 class="title">You don't need org-alert, Emacs has it built-in (kinda)</h1>
 <p>
-<b>TL;DR</b>: jump to <a href="#orgacc5f75">the full config</a>.
+<b>TL;DR</b>: jump to <a href="#org7627635">the full config</a>.
 </p>
 
 <p>
@@ -37,9 +37,9 @@ And then I found out that for what I needed, 20 lines of elisp were enough to
 replace org-alert.
 </p>
 
-<div id="outline-container-orgdf5ac27" class="outline-2">
-<h2 id="orgdf5ac27">Meet appt</h2>
-<div class="outline-text-2" id="text-orgdf5ac27">
+<div id="outline-container-org41c635b" class="outline-2">
+<h2 id="org41c635b">Meet appt</h2>
+<div class="outline-text-2" id="text-org41c635b">
 <p>
 appt is a tool for warning you about appointments, which by default is based
 on the Emacs diary, but you can feed it with your org agenda entries, and it
@@ -79,9 +79,9 @@ appt itself doesn't show desktop notifications, only a window inside Emacs
 </div>
 </div>
 
-<div id="outline-container-orgf2cfcf1" class="outline-2">
-<h2 id="orgf2cfcf1">Desktop notifications</h2>
-<div class="outline-text-2" id="text-orgf2cfcf1">
+<div id="outline-container-org9c80430" class="outline-2">
+<h2 id="org9c80430">Desktop notifications</h2>
+<div class="outline-text-2" id="text-org9c80430">
 <p>
 Emacs has built-in support for sending desktop notifications on Windows and Linux:
 </p>
@@ -108,7 +108,7 @@ In KDE it looks like this:
 </p>
 
 
-<div id="org1102e18" class="figure">
+<div id="orgb84b39e" class="figure">
 <p><img src="emacs_notification_example.png" alt="emacs_notification_example.png" />
 </p>
 </div>
@@ -137,49 +137,33 @@ it to whatever you prefer:
          :urgency 'critical)))
 </pre>
 </div>
+</div>
+</div>
 
+<div id="outline-container-org3993590" class="outline-2">
+<h2 id="org3993590">Updating appt automatically</h2>
+<div class="outline-text-2" id="text-org3993590">
 <p>
-Finally, we need to update appt everytime we change our agenda items.
-I couldn't find a specific hook for that, so if you have any suggestions please
-let me know.
-</p>
-
-<p>
-Here is how I've done:
+We want to make sure appt will be always up to date, even if we reschedule or remove appointments.
+For that, I'll make Emacs update appt list before it check for appointments.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">;; update appt when agenda is opened
-(add-hook 'org-agenda-after-show-hook
-          (lambda ()
-            (org-agenda-to-appt t)))
-
-;; update appt when any org file is saved
-;; here I could check if the file is an agenda file, but I don't think its necessary
-(add-hook 'after-save-hook
-          (lambda ()
-            (when (eq major-mode 'org-mode)
-              (org-agenda-to-appt t))))
+<pre class="src src-emacs-lisp">;; before checking appt, run org-agenda-to-appt
+(advice-add 'appt-check
+            :before
+            (lambda (&amp;rest args)
+              (org-agenda-to-appt t)))
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgacc5f75" class="outline-2">
-<h2 id="orgacc5f75">The full config</h2>
-<div class="outline-text-2" id="text-orgacc5f75">
+<div id="outline-container-org7627635" class="outline-2">
+<h2 id="org7627635">The full config</h2>
+<div class="outline-text-2" id="text-org7627635">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(use-package emacs
-  :hook
-  ;; when agenda is opened and showed, refresh appt
-  ((org-agenda-after-show . (lambda ()
-                              (org-agenda-to-appt t)))
-
-  ;; when any org file changed, refresh appt
-   (after-save . (lambda ()
-                   (when (eq major-mode 'org-mode)
-                     (org-agenda-to-appt t)))))
-
   :config
   ;; start warning 60 minutes before the appointment
   (setq appt-message-warning-time 60)
@@ -195,11 +179,17 @@ Here is how I've done:
 
     ;; for other systems, use notifications-notify
     (setq appt-disp-window-function
-        (lambda (remaining new-time msg)
-          (notifications-notify
-           :title (format "In %s minutes" remaining)
-           :body msg
-           :urgency 'critical))))
+          (lambda (remaining new-time msg)
+            (notifications-notify
+             :title (format "In %s minutes" remaining)
+             :body msg
+             :urgency 'critical))))
+
+  (advice-add 'appt-check
+              :before
+              (lambda (&amp;rest args)
+                (org-agenda-to-appt t)))
+
   (appt-activate t))
 </pre>
 </div>

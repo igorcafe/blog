@@ -77,24 +77,17 @@ it to whatever you prefer:
            :urgency 'critical)))
 #+end_src
 
-Finally, we need to update appt everytime we change our agenda items.
-I couldn't find a specific hook for that, so if you have any suggestions please
-let me know.
+* Updating appt automatically
 
-Here is how I've done:
+We want to make sure appt will be always up to date, even if we reschedule or remove appointments.
+For that, I'll make Emacs update appt list before it check for appointments.
 
 #+begin_src emacs-lisp
-  ;; update appt when agenda is opened
-  (add-hook 'org-agenda-after-show-hook
-            (lambda ()
-              (org-agenda-to-appt t)))
-
-  ;; update appt when any org file is saved
-  ;; here I could check if the file is an agenda file, but I don't think its necessary
-  (add-hook 'after-save-hook
-            (lambda ()
-              (when (eq major-mode 'org-mode)
-                (org-agenda-to-appt t))))
+  ;; before checking appt, run org-agenda-to-appt
+  (advice-add 'appt-check
+              :before
+              (lambda (&rest args)
+                (org-agenda-to-appt t)))
 #+end_src
 
 * The full config
@@ -104,16 +97,6 @@ Here is how I've done:
 
 #+begin_src emacs-lisp
   (use-package emacs
-    :hook
-    ;; when agenda is opened and showed, refresh appt
-    ((org-agenda-after-show . (lambda ()
-                                (org-agenda-to-appt t)))
-
-    ;; when any org file changed, refresh appt
-     (after-save . (lambda ()
-                     (when (eq major-mode 'org-mode)
-                       (org-agenda-to-appt t)))))
-
     :config
     ;; start warning 60 minutes before the appointment
     (setq appt-message-warning-time 60)
@@ -129,11 +112,17 @@ Here is how I've done:
 
       ;; for other systems, use notifications-notify
       (setq appt-disp-window-function
-          (lambda (remaining new-time msg)
-            (notifications-notify
-             :title (format "In %s minutes" remaining)
-             :body msg
-             :urgency 'critical))))
+            (lambda (remaining new-time msg)
+              (notifications-notify
+               :title (format "In %s minutes" remaining)
+               :body msg
+               :urgency 'critical))))
+
+    (advice-add 'appt-check
+                :before
+                (lambda (&rest args)
+                  (org-agenda-to-appt t)))
+
     (appt-activate t))
 #+end_src
 
