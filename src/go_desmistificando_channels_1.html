@@ -5,24 +5,26 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>7 vantagens da linguagem Go</title>
+<title>Go: Desmistificando channels #1 - Conceito e sintaxe</title>
 <meta name="generator" content="Org Mode" />
+
 <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<div id="preamble" class="status">
+<header><nav><a href="/">Home</a>
+<a href="https://www.linkedin.com/in/igoracmelo/">LinkedIn</a>
+<a href="https://github.com/igorcafe">GitHub</a></nav></header>
+</div>
 <div id="content" class="content">
-
-<div id="outline-container-org9e2a882" class="outline-2">
-<h2 id="org9e2a882">7 vantagens da linguagem Go</h2>
-<div class="outline-text-2" id="text-org9e2a882">
+<h1 class="title">Go: Desmistificando channels #1 - Conceito e sintaxe</h1>
 <p>
 Publicado em 19/12/2023.
 </p>
-</div>
-
-<div id="outline-container-org2222a62" class="outline-3">
-<h3 id="org2222a62">Introdução</h3>
-<div class="outline-text-3" id="text-org2222a62">
+<div id="outline-container-org68efbe0" class="outline-2">
+<h2 id="org68efbe0">Introdução</h2>
+<div class="outline-text-2" id="text-org68efbe0">
 <p>
 Resolvi fazer esse texto porque no meu primeiro contato com channels eu não
 entendi muito bem como funcionava, daí eu sempre fugia para o <code>WaitGroup</code> ou
@@ -36,10 +38,9 @@ problemas comuns que você vai encontrar ao usá-los de forma errada.
 </p>
 </div>
 </div>
-
-<div id="outline-container-org87e0265" class="outline-3">
-<h3 id="org87e0265">O que é e para que serve?</h3>
-<div class="outline-text-3" id="text-org87e0265">
+<div id="outline-container-org32c50b7" class="outline-2">
+<h2 id="org32c50b7">O que é e para que serve?</h2>
+<div class="outline-text-2" id="text-org32c50b7">
 <p>
 Channel, ou canal, é uma forma nativa do Go para comunicar e sincronizar
 goroutines.
@@ -64,10 +65,9 @@ iniciou</li>
 </ul>
 </div>
 </div>
-
-<div id="outline-container-org7caab1a" class="outline-3">
-<h3 id="org7caab1a">Criando e usando channels</h3>
-<div class="outline-text-3" id="text-org7caab1a">
+<div id="outline-container-orgb2a91e9" class="outline-2">
+<h2 id="orgb2a91e9">Criando e usando channels</h2>
+<div class="outline-text-2" id="text-orgb2a91e9">
 <p>
 Para criar um channel, fazemos:
 </p>
@@ -132,17 +132,14 @@ Para receber do channel, fazemos:
     // recebendo de um channel e descartando valor
     &lt;-ch
 
-    // recebendo de um channel e guardando numa variável
-    name := &lt;-ch
-}
+    // recebendo de um channel e guardando numa variável name := &lt;-ch }
 </pre>
 </div>
 </div>
 </div>
-
-<div id="outline-container-orga17ca0c" class="outline-3">
-<h3 id="orga17ca0c">Por que não funciona?</h3>
-<div class="outline-text-3" id="text-orga17ca0c">
+<div id="outline-container-org30dd9c7" class="outline-2">
+<h2 id="org30dd9c7">Por que não funciona?</h2>
+<div class="outline-text-2" id="text-org30dd9c7">
 <p>
 Se você rodar qualquer um dos códigos do exemplo anterior, vai acontecer isso:
 </p>
@@ -188,10 +185,9 @@ ver isso mais para frente.
 </p>
 </div>
 </div>
-
-<div id="outline-container-org6b0b92d" class="outline-3">
-<h3 id="org6b0b92d">Usando channels corretamente</h3>
-<div class="outline-text-3" id="text-org6b0b92d">
+<div id="outline-container-org5ae1339" class="outline-2">
+<h2 id="org5ae1339">Usando channels corretamente</h2>
+<div class="outline-text-2" id="text-org5ae1339">
 <p>
 Para corrigir o problema do deadlock anterior, vamos criar outra goroutine que
 lê do channel, enquanto a goroutine <code>main</code> vai enviar para o channel.
@@ -229,28 +225,29 @@ Se você está confuso com <code>ch &lt;- 12</code> e <code>&lt;-ch</code>, voc�
 para onde o dado está fluindo.
 </p>
 
-<div class="org-src-container">
-<pre class="src src-go">// o dado está saindo do channel ch (receber) e sendo descartado
+<p>
+#+begin<sub>src</sub> go
+// o dado está saindo do channel ch (receber) e sendo descartado
 &lt;-ch
+</p>
 
+<p>
 // o dado está saindo do channel ch (receber) e sendo atribuído à variável x
 x := &lt;-ch
+</p>
 
-// o dado 12 está indo para o channel ch (enviar)
-ch &lt;- 12
-</pre>
+<p>
+// o dado 12 está indo para o channel ch (enviar) ch &lt;- 12 #+end<sub>src</sub>
+</p>
 </div>
 </div>
-</div>
-
-<div id="outline-container-orgf6e0524" class="outline-3">
-<h3 id="orgf6e0524">Conclusão</h3>
-<div class="outline-text-3" id="text-orgf6e0524">
+<div id="outline-container-orgb48eacb" class="outline-2">
+<h2 id="orgb48eacb">Conclusão</h2>
+<div class="outline-text-2" id="text-orgb48eacb">
 <p>
 Isso conclui a parte 1 dessa série, com o conceito básico de channels.  Na parte
 2 vamos ver um exemplo mais realístico de onde e como seria utilizado channels.
 </p>
-</div>
 </div>
 </div>
 </div>
