@@ -1,0 +1,31 @@
+:PROPERTIES:
+:ID:       a75944ec-89ba-4383-9e2a-6326badcd9a4
+:END:
+#+title: Cosine Similarity
+#+filetags: draft
+
+Cosine similarity is one way to measure the similarity between two vectors.
+It's defined as the cosine of the angle formed by the vectors.
+
+This means vectors with small angle difference will have a cosine closer to 1.0
+("100%"), while vectors with large angle difference will have a cosine closer to
+0.0 ("0%").
+
+Note: cosine similary just takes into account the angle, not the magnitude of
+the vector, so it may not be suitable for every comparison.
+
+Here is how you can compute the cosine similarity of two vectors \(\vec{A}\) and \(\vec{B}\):
+
+\begin{equation}
+\text{Cosine Similarity} =
+\frac{{\vec {A}} \cdot {\vec {B}}}
+     {\|{\vec {A}}\|_{2}\|{\vec {B}}\|_{2}}
+\end{equation}
+
+Cosine similarity is commonly used for comparing text similarity.
+The idea is to take the sentences that you want to compare and convert each into
+a vector representing its meaning in a process called embedding.
+
+The cool thing about cosine similarity is that it works regardless of how many
+dimensions your vector has.
+GPT 4o embeddings, for example, consist of vectors with 1536 dimensions.

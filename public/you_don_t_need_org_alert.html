@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>You don't need org-alert, Emacs has it built-in (kinda)</title>
 <meta name="generator" content="Org Mode" />
+
 <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
-					 <link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
 <div id="preamble" class="status">
@@ -19,27 +20,27 @@
 <div id="content" class="content">
 <h1 class="title">You don't need org-alert, Emacs has it built-in (kinda)</h1>
 <p>
-<b>TL;DR</b>: jump to <a href="#org7627635">the full config</a>.
+Topics: <a href="emacs.html#ID-183c494c-72ca-4629-90af-023d40e653b4">Emacs</a>, <a href="org_mode.html#ID-46875558-243b-4a97-87e2-e52b10eed38d">Org Mode</a>
 </p>
 
 <p>
-I tried using org-alert and org-wild-notifier, but both didn't work very well
-with me.
+<b>TL;DR</b>: jump to <a href="#org753d898">the full config</a>.
 </p>
 
 <p>
-org-alert was the one that worked best, but sometimes it didn't notify,
-or it notified after the schedule, and some other errors.
+I tried using org-alert and org-wild-notifier, but both didn't work very well with me.
 </p>
 
 <p>
-And then I found out that for what I needed, 20 lines of elisp were enough to
-replace org-alert.
+org-alert was the one that worked best, but sometimes it didn't notify, or it notified after the schedule, and some other errors.
 </p>
 
-<div id="outline-container-org41c635b" class="outline-2">
-<h2 id="org41c635b">Meet appt</h2>
-<div class="outline-text-2" id="text-org41c635b">
+<p>
+And then I found out that for what I needed, 20 lines of elisp were enough to replace org-alert.
+</p>
+<div id="outline-container-org4301617" class="outline-2">
+<h2 id="org4301617">Meet appt</h2>
+<div class="outline-text-2" id="text-org4301617">
 <p>
 appt is a tool for warning you about appointments, which by default is based
 on the Emacs diary, but you can feed it with your org agenda entries, and it
@@ -78,10 +79,9 @@ appt itself doesn't show desktop notifications, only a window inside Emacs
 </p>
 </div>
 </div>
-
-<div id="outline-container-org9c80430" class="outline-2">
-<h2 id="org9c80430">Desktop notifications</h2>
-<div class="outline-text-2" id="text-org9c80430">
+<div id="outline-container-org8061e96" class="outline-2">
+<h2 id="org8061e96">Desktop notifications</h2>
+<div class="outline-text-2" id="text-org8061e96">
 <p>
 Emacs has built-in support for sending desktop notifications on Windows and Linux:
 </p>
@@ -101,16 +101,6 @@ For Mac, an alternative is to use the function <code>org-show-notification</code
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(org-show-notification "attention! you have a meeting in 5 minutes")
 </pre>
-</div>
-
-<p>
-In KDE it looks like this:
-</p>
-
-
-<div id="orgb84b39e" class="figure">
-<p><img src="emacs_notification_example.png" alt="emacs_notification_example.png" />
-</p>
 </div>
 
 <p>
@@ -139,10 +129,9 @@ it to whatever you prefer:
 </div>
 </div>
 </div>
-
-<div id="outline-container-org3993590" class="outline-2">
-<h2 id="org3993590">Updating appt automatically</h2>
-<div class="outline-text-2" id="text-org3993590">
+<div id="outline-container-orge882b7b" class="outline-2">
+<h2 id="orge882b7b">Updating appt automatically</h2>
+<div class="outline-text-2" id="text-orge882b7b">
 <p>
 We want to make sure appt will be always up to date, even if we reschedule or remove appointments.
 For that, I'll make Emacs update appt list before it check for appointments.
@@ -158,10 +147,9 @@ For that, I'll make Emacs update appt list before it check for appointments.
 </div>
 </div>
 </div>
-
-<div id="outline-container-org7627635" class="outline-2">
-<h2 id="org7627635">The full config</h2>
-<div class="outline-text-2" id="text-org7627635">
+<div id="outline-container-org753d898" class="outline-2">
+<h2 id="org753d898">The full config</h2>
+<div class="outline-text-2" id="text-org753d898">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(use-package emacs
   :config
@@ -197,6 +185,22 @@ For that, I'll make Emacs update appt list before it check for appointments.
 <p>
 Hope it's useful and feel free to add any suggestions.
 </p>
+</div>
+</div>
+<div id="outline-container-org18193e6" class="outline-2">
+<h2 id="org18193e6">Links</h2>
+<div class="outline-text-2" id="text-org18193e6">
+<ul class="org-ul">
+<li><a href="emacs.html#ID-183c494c-72ca-4629-90af-023d40e653b4">Emacs</a></li>
+<li><a href="org_mode.html#ID-46875558-243b-4a97-87e2-e52b10eed38d">Org Mode</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org7773f5e" class="outline-2">
+<h2 id="org7773f5e">Backlinks</h2>
+<div class="outline-text-2" id="text-org7773f5e">
+<p>
+No backlinks.</p>
 </div>
 </div>
 </div>

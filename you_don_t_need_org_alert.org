@@ -1,15 +1,18 @@
+:PROPERTIES:
+:ID:       5a326ecd-a93c-444a-b99e-97b17185b5c2
+:END:
 #+title: You don't need org-alert, Emacs has it built-in (kinda)
+#+filetags: :post:draft:
 
-*TL;DR*: jump to [[id:3c1a543f-d037-448e-9c62-4cde72e71933][the full config]].
+Topics: [[id:183c494c-72ca-4629-90af-023d40e653b4][Emacs]], [[id:46875558-243b-4a97-87e2-e52b10eed38d][Org Mode]]
 
-I tried using org-alert and org-wild-notifier, but both didn't work very well
-with me.
+*TL;DR*: jump to [[* The full config][the full config]].
 
-org-alert was the one that worked best, but sometimes it didn't notify,
-or it notified after the schedule, and some other errors.
+I tried using org-alert and org-wild-notifier, but both didn't work very well with me.
 
-And then I found out that for what I needed, 20 lines of elisp were enough to
-replace org-alert.
+org-alert was the one that worked best, but sometimes it didn't notify, or it notified after the schedule, and some other errors.
+
+And then I found out that for what I needed, 20 lines of elisp were enough to replace org-alert.
 
 * Meet appt
 
@@ -55,9 +58,9 @@ For Mac, an alternative is to use the function =org-show-notification=:
   (org-show-notification "attention! you have a meeting in 5 minutes")
 #+end_src
 
-In KDE it looks like this:
+# In KDE it looks like this:
 
-[[file:emacs_notification_example.png]]
+# [[file:./public/emacs_notification_example.png]]
 
 You can check the docs on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Notifications.html][desktop notifications]] for more details.
 
@@ -91,9 +94,6 @@ For that, I'll make Emacs update appt list before it check for appointments.
 #+end_src
 
 * The full config
-:PROPERTIES:
-:ID:       3c1a543f-d037-448e-9c62-4cde72e71933
-:END:
 
 #+begin_src emacs-lisp
   (use-package emacs

@@ -1,0 +1,5 @@
+:PROPERTIES:
+:ID:       a88be57c-3f65-4bf8-95ce-652713b5428d
+:END:
+#+title: Go Programming Language
+

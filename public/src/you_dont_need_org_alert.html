@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>You don't need org-alert, Emacs has it built-in (kinda)</title>
+<meta name="generator" content="Org Mode" />
+
+<link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="preamble" class="status">
+<header><nav><a href="/">Home</a>
+<a href="https://www.linkedin.com/in/igoracmelo/">LinkedIn</a>
+<a href="https://github.com/igorcafe">GitHub</a></nav></header>
+</div>
+<div id="content" class="content">
+<h1 class="title">You don't need org-alert, Emacs has it built-in (kinda)</h1>
+<p>
+<b>TL;DR</b>: jump to <a href="#ID-3c1a543f-d037-448e-9c62-4cde72e71933">the full config</a>.
+</p>
+
+<p>
+I tried using org-alert and org-wild-notifier, but both didn't work very well
+with me.
+</p>
+
+<p>
+org-alert was the one that worked best, but sometimes it didn't notify,
+or it notified after the schedule, and some other errors.
+</p>
+
+<p>
+And then I found out that for what I needed, 20 lines of elisp were enough to
+replace org-alert.
+</p>
+<div id="outline-container-org02e8b86" class="outline-2">
+<h2 id="org02e8b86">Meet appt</h2>
+<div class="outline-text-2" id="text-org02e8b86">
+<p>
+appt is a tool for warning you about appointments, which by default is based
+on the Emacs diary, but you can feed it with your org agenda entries, and it
+will warn you about your schedules and deadlines.
+</p>
+
+<p>
+Let's first configure it:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(setq appt-message-warning-time 60) ;; start warning 60 minutes before appointments
+(setq appt-display-interval 1) ;; display warning every minute
+(appt-activate t) ;; starts the appt "mode"
+</pre>
+</div>
+
+<p>
+And to feed it with your org agenda, do:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">;; `t' here means "clear whatever is in appt before adding"
+(org-agenda-to-appt t)
+</pre>
+</div>
+
+<p>
+This will feed once, and won't update if you change the agenda. Later on I will
+share the full config.
+</p>
+
+<p>
+appt itself doesn't show desktop notifications, only a window inside Emacs
+(which may be enough for you).
+</p>
+</div>
+</div>
+<div id="outline-container-org0ea5715" class="outline-2">
+<h2 id="org0ea5715">Desktop notifications</h2>
+<div class="outline-text-2" id="text-org0ea5715">
+<p>
+Emacs has built-in support for sending desktop notifications on Windows and Linux:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(notifications-notify
+ :title "attention!"
+ :body "you have a meeting in 5 minutes"
+ :urgency 'critical)
+</pre>
+</div>
+
+<p>
+For Mac, an alternative is to use the function <code>org-show-notification</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(org-show-notification "attention! you have a meeting in 5 minutes")
+</pre>
+</div>
+
+<p>
+In KDE it looks like this:
+</p>
+
+
+<div id="org460b9f1" class="figure">
+<p><img src="../public/emacs_notification_example.png" alt="emacs_notification_example.png" />
+</p>
+</div>
+
+<p>
+You can check the docs on <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Notifications.html">desktop notifications</a> for more details.
+</p>
+
+<p>
+Now here is the cool thing: appt has a variable named
+<code>appt-disp-window-function</code>, which by default is set to the function that shows
+the window inside Emacs.
+</p>
+
+<p>
+So to get desktop notifications about your agenda events, you only need to set
+it to whatever you prefer:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(setq appt-disp-window-function
+      (lambda (remaining new-time msg)
+        (notifications-notify
+         :title (message "In %s minutes" remaining)
+         :body msg
+         :urgency 'critical)))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgd70af3e" class="outline-2">
+<h2 id="orgd70af3e">Updating appt automatically</h2>
+<div class="outline-text-2" id="text-orgd70af3e">
+<p>
+We want to make sure appt will be always up to date, even if we reschedule or remove appointments.
+For that, I'll make Emacs update appt list before it check for appointments.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">;; before checking appt, run org-agenda-to-appt
+(advice-add 'appt-check
+            :before
+            (lambda (&amp;rest args)
+              (org-agenda-to-appt t)))
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-ID-3c1a543f-d037-448e-9c62-4cde72e71933" class="outline-2">
+<h2 id="ID-3c1a543f-d037-448e-9c62-4cde72e71933">The full config</h2>
+<div class="outline-text-2" id="text-org97c29e3">
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(use-package emacs
+  :config
+  ;; start warning 60 minutes before the appointment
+  (setq appt-message-warning-time 60)
+
+  ;; warn me every 5 minutes
+  (setq appt-display-interval 5)
+
+  (if (eq system-type 'darwin)
+      ;; for mac, use org-show-notification, which is more limited
+      (setq appt-disp-window-function
+            (lambda (remaining new-time msg)
+              (org-show-notification msg)))
+
+    ;; for other systems, use notifications-notify
+    (setq appt-disp-window-function
+          (lambda (remaining new-time msg)
+            (notifications-notify
+             :title (format "In %s minutes" remaining)
+             :body msg
+             :urgency 'critical))))
+
+  (advice-add 'appt-check
+              :before
+              (lambda (&amp;rest args)
+                (org-agenda-to-appt t)))
+
+  (appt-activate t))
+</pre>
+</div>
+
+<p>
+Hope it's useful and feel free to add any suggestions.
+</p>
+</div>
+</div>
+</div>
+</body>
+</html>

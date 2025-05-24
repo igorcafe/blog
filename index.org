@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       52c3d2f3-e656-49b2-be65-e3fb6da0b74b
+:END:
+#+title: Blog | Igor Melo 
+#+filetags: draft
+#+OPTIONS: title:nil
