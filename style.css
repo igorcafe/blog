@@ -1,17 +1,38 @@
-nav {
-	padding: 15px 0;
-	display: flex;
-	justify-content: space-between;
-}
-
-h2 {
-	font-size: 35px;
-}
-
-h3 {
-	font-size: 26px;
+body {
+    width: 700px;
+    max-width: 90vw;
+    margin: 10px auto;
+    color: black;
+    font-family: monospace;
+    font-size: 18px;
 }
 
 nav {
-	justify-content: unset;
+    padding: 15px 0;
+    display: flex;
+    gap: 15px;
+}
+
+h1 {
+    font-size: 30px;
+}
+
+pre.src {
+    padding: 15px;
+    background-color: white;
+    background-color: #0001;
+    overflow-x: auto;
+}
+
+a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration: none;
+    /* text-decoration-color: lightblue; */
+    padding: 1px 0;
+    border-bottom: 2px solid #3548cf;
+}
+
+li {
+    padding: 5px;
 }

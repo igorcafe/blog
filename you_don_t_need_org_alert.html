@@ -8,7 +8,6 @@
 <title>You don't need org-alert, Emacs has it built-in (kinda)</title>
 <meta name="generator" content="Org Mode" />
 
-<link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -24,7 +23,7 @@ Topics: <a href="emacs.html#ID-183c494c-72ca-4629-90af-023d40e653b4">Emacs</a>, 
 </p>
 
 <p>
-<b>TL;DR</b>: jump to <a href="#org753d898">the full config</a>.
+<b>TL;DR</b>: jump to <a href="#orga88178f">the full config</a>.
 </p>
 
 <p>
@@ -38,9 +37,9 @@ org-alert was the one that worked best, but sometimes it didn't notify, or it no
 <p>
 And then I found out that for what I needed, 20 lines of elisp were enough to replace org-alert.
 </p>
-<div id="outline-container-org4301617" class="outline-2">
-<h2 id="org4301617">Meet appt</h2>
-<div class="outline-text-2" id="text-org4301617">
+<div id="outline-container-org66c27d3" class="outline-2">
+<h2 id="org66c27d3">Meet appt</h2>
+<div class="outline-text-2" id="text-org66c27d3">
 <p>
 appt is a tool for warning you about appointments, which by default is based
 on the Emacs diary, but you can feed it with your org agenda entries, and it
@@ -52,9 +51,9 @@ Let's first configure it:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(setq appt-message-warning-time 60) ;; start warning 60 minutes before appointments
-(setq appt-display-interval 1) ;; display warning every minute
-(appt-activate t) ;; starts the appt "mode"
+<pre class="src src-emacs-lisp">(<span style="color: #531ab6;">setq</span><span style="color: #9f9f9f;"> </span>appt-message-warning-time<span style="color: #9f9f9f;"> </span>60)<span style="color: #9f9f9f;"> </span><span style="color: #595959;">;;</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">start</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">warning</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">60</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">minutes</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">before</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">appointments</span>
+(<span style="color: #531ab6;">setq</span><span style="color: #9f9f9f;"> </span>appt-display-interval<span style="color: #9f9f9f;"> </span>1)<span style="color: #9f9f9f;"> </span><span style="color: #595959;">;;</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">display</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">warning</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">every</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">minute</span>
+(appt-activate<span style="color: #9f9f9f;"> </span>t)<span style="color: #9f9f9f;"> </span><span style="color: #595959;">;;</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">starts</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">the</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">appt</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">"mode"</span>
 </pre>
 </div>
 
@@ -63,8 +62,8 @@ And to feed it with your org agenda, do:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">;; `t' here means "clear whatever is in appt before adding"
-(org-agenda-to-appt t)
+<pre class="src src-emacs-lisp"><span style="color: #595959;">;;</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">`</span><span style="color: #0000b0;">t</span><span style="color: #595959;">'</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">here</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">means</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">"clear</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">whatever</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">is</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">in</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">appt</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">before</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">adding"</span>
+(org-agenda-to-appt<span style="color: #9f9f9f;"> </span>t)
 </pre>
 </div>
 
@@ -79,18 +78,18 @@ appt itself doesn't show desktop notifications, only a window inside Emacs
 </p>
 </div>
 </div>
-<div id="outline-container-org8061e96" class="outline-2">
-<h2 id="org8061e96">Desktop notifications</h2>
-<div class="outline-text-2" id="text-org8061e96">
+<div id="outline-container-org73027d5" class="outline-2">
+<h2 id="org73027d5">Desktop notifications</h2>
+<div class="outline-text-2" id="text-org73027d5">
 <p>
 Emacs has built-in support for sending desktop notifications on Windows and Linux:
 </p>
 
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(notifications-notify
- :title "attention!"
- :body "you have a meeting in 5 minutes"
- :urgency 'critical)
+<span style="color: #9f9f9f;"> </span><span style="color: #8f0075;">:title</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">"attention!"</span>
+<span style="color: #9f9f9f;"> </span><span style="color: #8f0075;">:body</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">"you</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">have</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">a</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">meeting</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">in</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">5</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">minutes"</span>
+<span style="color: #9f9f9f;"> </span><span style="color: #8f0075;">:urgency</span><span style="color: #9f9f9f;"> </span>'critical)
 </pre>
 </div>
 
@@ -99,7 +98,7 @@ For Mac, an alternative is to use the function <code>org-show-notification</code
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(org-show-notification "attention! you have a meeting in 5 minutes")
+<pre class="src src-emacs-lisp">(org-show-notification<span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">"attention!</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">you</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">have</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">a</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">meeting</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">in</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">5</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">minutes"</span>)
 </pre>
 </div>
 
@@ -119,66 +118,66 @@ it to whatever you prefer:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(setq appt-disp-window-function
-      (lambda (remaining new-time msg)
-        (notifications-notify
-         :title (message "In %s minutes" remaining)
-         :body msg
-         :urgency 'critical)))
+<pre class="src src-emacs-lisp">(<span style="color: #531ab6;">setq</span><span style="color: #9f9f9f;"> </span>appt-disp-window-function
+<span style="color: #9f9f9f;">      </span>(<span style="color: #531ab6;">lambda</span><span style="color: #9f9f9f;"> </span>(remaining<span style="color: #9f9f9f;"> </span>new-time<span style="color: #9f9f9f;"> </span>msg)
+<span style="color: #9f9f9f;">        </span>(notifications-notify
+<span style="color: #9f9f9f;">         </span><span style="color: #8f0075;">:title</span><span style="color: #9f9f9f;"> </span>(message<span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">"In</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">%s</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">minutes"</span><span style="color: #9f9f9f;"> </span>remaining)
+<span style="color: #9f9f9f;">         </span><span style="color: #8f0075;">:body</span><span style="color: #9f9f9f;"> </span>msg
+<span style="color: #9f9f9f;">         </span><span style="color: #8f0075;">:urgency</span><span style="color: #9f9f9f;"> </span>'critical)))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orge882b7b" class="outline-2">
-<h2 id="orge882b7b">Updating appt automatically</h2>
-<div class="outline-text-2" id="text-orge882b7b">
+<div id="outline-container-org6f7341b" class="outline-2">
+<h2 id="org6f7341b">Updating appt automatically</h2>
+<div class="outline-text-2" id="text-org6f7341b">
 <p>
 We want to make sure appt will be always up to date, even if we reschedule or remove appointments.
 For that, I'll make Emacs update appt list before it check for appointments.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">;; before checking appt, run org-agenda-to-appt
-(advice-add 'appt-check
-            :before
-            (lambda (&amp;rest args)
-              (org-agenda-to-appt t)))
+<pre class="src src-emacs-lisp"><span style="color: #595959;">;;</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">before</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">checking</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">appt,</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">run</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">org-agenda-to-appt</span>
+(advice-add<span style="color: #9f9f9f;"> </span>'appt-check
+<span style="color: #9f9f9f;">            </span><span style="color: #8f0075;">:before</span>
+<span style="color: #9f9f9f;">            </span>(<span style="color: #531ab6;">lambda</span><span style="color: #9f9f9f;"> </span>(<span style="color: #005f5f;">&amp;rest</span><span style="color: #9f9f9f;"> </span>args)
+<span style="color: #9f9f9f;">              </span>(org-agenda-to-appt<span style="color: #9f9f9f;"> </span>t)))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org753d898" class="outline-2">
-<h2 id="org753d898">The full config</h2>
-<div class="outline-text-2" id="text-org753d898">
+<div id="outline-container-orga88178f" class="outline-2">
+<h2 id="orga88178f">The full config</h2>
+<div class="outline-text-2" id="text-orga88178f">
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(use-package emacs
-  :config
-  ;; start warning 60 minutes before the appointment
-  (setq appt-message-warning-time 60)
+<pre class="src src-emacs-lisp">(<span style="color: #531ab6;">use-package</span><span style="color: #9f9f9f;"> </span>emacs
+<span style="color: #9f9f9f;">  </span><span style="color: #8f0075;">:config</span>
+<span style="color: #9f9f9f;">  </span><span style="color: #595959;">;;</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">start</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">warning</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">60</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">minutes</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">before</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">the</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">appointment</span>
+<span style="color: #9f9f9f;">  </span>(<span style="color: #531ab6;">setq</span><span style="color: #9f9f9f;"> </span>appt-message-warning-time<span style="color: #9f9f9f;"> </span>60)
 
-  ;; warn me every 5 minutes
-  (setq appt-display-interval 5)
+<span style="color: #9f9f9f;">  </span><span style="color: #595959;">;;</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">warn</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">me</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">every</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">5</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">minutes</span>
+<span style="color: #9f9f9f;">  </span>(<span style="color: #531ab6;">setq</span><span style="color: #9f9f9f;"> </span>appt-display-interval<span style="color: #9f9f9f;"> </span>5)
 
-  (if (eq system-type 'darwin)
-      ;; for mac, use org-show-notification, which is more limited
-      (setq appt-disp-window-function
-            (lambda (remaining new-time msg)
-              (org-show-notification msg)))
+<span style="color: #9f9f9f;">  </span>(<span style="color: #531ab6;">if</span><span style="color: #9f9f9f;"> </span>(eq<span style="color: #9f9f9f;"> </span>system-type<span style="color: #9f9f9f;"> </span>'darwin)
+<span style="color: #9f9f9f;">      </span><span style="color: #595959;">;;</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">for</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">mac,</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">use</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">org-show-notification,</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">which</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">is</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">more</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">limited</span>
+<span style="color: #9f9f9f;">      </span>(<span style="color: #531ab6;">setq</span><span style="color: #9f9f9f;"> </span>appt-disp-window-function
+<span style="color: #9f9f9f;">            </span>(<span style="color: #531ab6;">lambda</span><span style="color: #9f9f9f;"> </span>(remaining<span style="color: #9f9f9f;"> </span>new-time<span style="color: #9f9f9f;"> </span>msg)
+<span style="color: #9f9f9f;">              </span>(org-show-notification<span style="color: #9f9f9f;"> </span>msg)))
 
-    ;; for other systems, use notifications-notify
-    (setq appt-disp-window-function
-          (lambda (remaining new-time msg)
-            (notifications-notify
-             :title (format "In %s minutes" remaining)
-             :body msg
-             :urgency 'critical))))
+<span style="color: #9f9f9f;">    </span><span style="color: #595959;">;;</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">for</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">other</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">systems,</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">use</span><span style="color: #9f9f9f;"> </span><span style="color: #595959;">notifications-notify</span>
+<span style="color: #9f9f9f;">    </span>(<span style="color: #531ab6;">setq</span><span style="color: #9f9f9f;"> </span>appt-disp-window-function
+<span style="color: #9f9f9f;">          </span>(<span style="color: #531ab6;">lambda</span><span style="color: #9f9f9f;"> </span>(remaining<span style="color: #9f9f9f;"> </span>new-time<span style="color: #9f9f9f;"> </span>msg)
+<span style="color: #9f9f9f;">            </span>(notifications-notify
+<span style="color: #9f9f9f;">             </span><span style="color: #8f0075;">:title</span><span style="color: #9f9f9f;"> </span>(format<span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">"In</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">%s</span><span style="color: #9f9f9f;"> </span><span style="color: #3548cf;">minutes"</span><span style="color: #9f9f9f;"> </span>remaining)
+<span style="color: #9f9f9f;">             </span><span style="color: #8f0075;">:body</span><span style="color: #9f9f9f;"> </span>msg
+<span style="color: #9f9f9f;">             </span><span style="color: #8f0075;">:urgency</span><span style="color: #9f9f9f;"> </span>'critical))))
 
-  (advice-add 'appt-check
-              :before
-              (lambda (&amp;rest args)
-                (org-agenda-to-appt t)))
+<span style="color: #9f9f9f;">  </span>(advice-add<span style="color: #9f9f9f;"> </span>'appt-check
+<span style="color: #9f9f9f;">              </span><span style="color: #8f0075;">:before</span>
+<span style="color: #9f9f9f;">              </span>(<span style="color: #531ab6;">lambda</span><span style="color: #9f9f9f;"> </span>(<span style="color: #005f5f;">&amp;rest</span><span style="color: #9f9f9f;"> </span>args)
+<span style="color: #9f9f9f;">                </span>(org-agenda-to-appt<span style="color: #9f9f9f;"> </span>t)))
 
-  (appt-activate t))
+<span style="color: #9f9f9f;">  </span>(appt-activate<span style="color: #9f9f9f;"> </span>t))
 </pre>
 </div>
 
@@ -187,18 +186,18 @@ Hope it's useful and feel free to add any suggestions.
 </p>
 </div>
 </div>
-<div id="outline-container-org18193e6" class="outline-2">
-<h2 id="org18193e6">Links</h2>
-<div class="outline-text-2" id="text-org18193e6">
+<div id="outline-container-org4da477e" class="outline-2">
+<h2 id="org4da477e">Links</h2>
+<div class="outline-text-2" id="text-org4da477e">
 <ul class="org-ul">
 <li><a href="emacs.html#ID-183c494c-72ca-4629-90af-023d40e653b4">Emacs</a></li>
 <li><a href="org_mode.html#ID-46875558-243b-4a97-87e2-e52b10eed38d">Org Mode</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-org7773f5e" class="outline-2">
-<h2 id="org7773f5e">Backlinks</h2>
-<div class="outline-text-2" id="text-org7773f5e">
+<div id="outline-container-org6ac0713" class="outline-2">
+<h2 id="org6ac0713">Backlinks</h2>
+<div class="outline-text-2" id="text-org6ac0713">
 <p>
 No backlinks.</p>
 </div>
