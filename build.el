@@ -1,7 +1,9 @@
 (require 'ox-publish)
 (require 'org-roam-export)
-;; (package-install 'htmlize)
-;; (require 'htmlize)
+(package-install 'htmlize)
+(require 'htmlize)
+(mapc 'disable-theme custom-enabled-themes)
+(load-theme 'modus-operandi)
 
 (defun org-export-index-page ()
   (let ((posts (org-roam-ql-nodes
@@ -37,7 +39,8 @@
       )))
 
 (defun org-export-insert-node-links ()
-  (let* ((node (with-current-buffer (replace-regexp-in-string "<[0-9]+>$" "" (buffer-name))
+  (let* ((buffer-name (replace-regexp-in-string "<[0-9]+>$" "" (buffer-name)))
+         (node (with-current-buffer buffer-name
                  (org-roam-node-at-point)))
          (links (and node (org-roam-ql-nodes `(backlink-from ,node))))
          (backlinks (and node (org-roam-ql-nodes `(backlink-to ,node)))))
@@ -74,14 +77,15 @@
 
 (setq org-roam-db-location "~/Git/blog/org-roam.db")
 (setq org-roam-directory "~/Git/blog/")
+(org-roam-db-sync)
 
 (setq org-export-with-broken-links t
       org-html-validation-link nil
       org-html-head-include-scripts nil
       org-html-head-include-default-style nil
       org-html-head nil
+;;<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\" />
       org-html-head "
-<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\" />
 <link rel=\"stylesheet\" href=\"style.css\" />"
       )
 
@@ -93,7 +97,6 @@
                       ("GitHub" . "https://github.com/igorcafe"))
                     "\n"))
 
-;;(setq navbar (concat "<nav>" navbar-items "</nav>"))
 (setq header (concat "<header><nav>" navbar-items "</nav></header>"))
 
 (setq org-publish-project-alist
@@ -105,6 +108,7 @@
              :with-author nil
              :with-title nil
              :section-numbers nil
+             :exclude-tags '("drill")
              :with-creator t
              :with-toc nil
              :time-stamp-file nil
