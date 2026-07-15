@@ -190,22 +190,11 @@ func HomeHandler(lang string) http.Handler {
 		t := translator(lang)
 		posts, err := loadPosts(lang)
 
-		return HTML5(HTML5Props{
-			Title:       "Blog | Igor Café",
-			Description: "",
-			Language:    "pt-BR",
-			Head: Group{
-				Link(Rel("stylesheet"), Href("/static/styles.css")),
-			},
-			Body: Group{
-				Navbar(lang, r.URL.String()),
-				Main(
-					H1(Text(t("Welcome!"))),
-					P(Text(t("Here I talk about programming, (good and bad) experiences, Go, Linux, Emacs, and anything else that interests me."))),
-					PostList(lang, posts, nil),
-				),
-			},
-		}), err
+		return Page(lang, "Blog", r.URL.String(), Main(
+			H1(Text(t("Welcome!"))),
+			P(Text(t("Here I talk about programming, (good and bad) experiences, Go, Linux, Emacs, and anything else that interests me."))),
+			PostList(lang, posts, nil),
+		)), err
 	})
 }
 
@@ -215,21 +204,32 @@ func TagsHandler(lang string) http.Handler {
 		tags := strings.Split(r.PathValue("tags"), ",")
 		posts, err := loadPosts(lang)
 
-		return HTML5(HTML5Props{
-			Title:       "Tags: " + strings.Join(tags, ", ") + " | Igor Café",
-			Description: "",
-			Language:    "pt-BR",
-			Head: Group{
-				Link(Rel("stylesheet"), Href("/static/styles.css")),
-			},
-			Body: Group{
-				Navbar(lang, r.URL.String()),
-				Main(
-					H1(Text(t("Results for filter by tags: ")+strings.Join(tags, ", "))),
-					PostList(lang, posts, tags),
-				),
-			},
-		}), err
+		return Page(lang, "Tags: "+strings.Join(tags, ", "), r.URL.String(), Main(
+			H1(Text(t("Results for filter by tags: ")+strings.Join(tags, ", "))),
+			PostList(lang, posts, tags),
+		)), err
+	})
+}
+
+func Page(lang string, title string, url string, content Node) Node {
+	var langAttr string
+	if lang == "pt" {
+		langAttr = "pt-BR"
+	} else {
+		langAttr = "en-US"
+	}
+
+	return HTML5(HTML5Props{
+		Title:       title + " | Igor Café",
+		Description: "",
+		Language:    langAttr,
+		Head: Group{
+			Link(Rel("stylesheet"), Href("/static/styles.css")),
+		},
+		Body: Group{
+			Navbar(lang, url),
+			content,
+		},
 	})
 }
 
@@ -240,69 +240,34 @@ func PostHandler(lang string) http.Handler {
 		if err != nil {
 			log.Print("load post: ", err)
 			w.WriteHeader(http.StatusNotFound)
-			return HTML(
-				Head(
-					TitleEl(Text(t("Post not found")+" | Igor Café")),
-					Link(Rel("stylesheet"), Href("/static/styles.css")),
-				),
-				Body(
-					Navbar(lang, r.URL.String()),
-					Main(
-						H1(Text(t("Post not found"))),
-						P(Text(t("Can't find the post you are looking for..."))),
-					),
-				),
-			), nil
+			return Page(lang, t("Post not found"), r.URL.String(), Main(
+				H1(Text(t("Post not found"))),
+				P(Text(t("Can't find the post you are looking for..."))),
+			)), nil
 		}
 
-		return HTML(
-			Head(
-				TitleEl(Text(post.title+" | Igor Café")),
-				Link(Rel("stylesheet"), Href("/static/styles.css")),
-			),
-			Body(
-				Navbar(lang, r.URL.String()),
-				Main(Raw(post.html)),
-			),
-		), nil
+		return Page(lang, post.title, r.URL.String(), Raw(post.html)), nil
 	})
 }
 
 func PostNotFoundHandler(lang string) http.Handler {
 	return ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
 		t := translator(lang)
-		return HTML(
-			Head(
-				TitleEl(Text(t("Post not found")+" | Igor Café")),
-				Link(Rel("stylesheet"), Href("/static/styles.css")),
-			),
-			Body(
-				Navbar(lang, r.URL.String()),
-				Main(
-					H1(Text(t("Post not found"))),
-					P(Text(t("Can't find the post you are looking for..."))),
-				),
-			),
-		), nil
+
+		return Page(lang, t("Post not found"), r.URL.String(), Main(
+			H1(Text(t("Post not found"))),
+			P(Text(t("Can't find the post you are looking for..."))),
+		)), nil
 	})
 }
 
 func PageNotFoundHandler(lang string) http.Handler {
 	return ghttp.Adapt(func(w http.ResponseWriter, r *http.Request) (Node, error) {
 		t := translator(lang)
-		return HTML(
-			Head(
-				TitleEl(Text(t("Page not found")+" | Igor Café")),
-				Link(Rel("stylesheet"), Href("/static/styles.css")),
-			),
-			Body(
-				Navbar(lang, r.URL.String()),
-				Main(
-					H1(Text(t("Page not found"))),
-					P(Text(t("Can't find the page you are looking for..."))),
-				),
-			),
-		), nil
+		return Page(lang, t("Page not found"), r.URL.String(), Main(
+			H1(Text(t("Page not found"))),
+			P(Text(t("Can't find the page you are looking for..."))),
+		)), nil
 	})
 }
 
