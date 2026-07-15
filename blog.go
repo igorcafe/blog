@@ -126,9 +126,9 @@ func TagList(lang string, tags []string) Node {
 		Class("tag-list"),
 		Map(tags, func(tag string) Node {
 			return A(
-				Class("link"),
+				Class("link tag"),
 				Href("/"+lang+"/tags/"+tag),
-				Text(":"+tag+":"),
+				Text(tag),
 			)
 		}),
 	)
