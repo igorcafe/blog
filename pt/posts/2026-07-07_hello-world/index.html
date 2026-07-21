@@ -1,0 +1,255 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>mayi: o CLI educado que pede antes de mexer nos seus arquivos | Igor Café</title><link rel="stylesheet" href="/static/styles.css"/></head><body><nav><a href="/">Home</a><a href="https://www.linkedin.com/in/igoracmelo/" target="_blank">LinkedIn</a><a href="https://github.com/igorcafe" target="_blank">GitHub</a><a href="https://github.com/igorcafe/blog" target="_blank">Repo</a><a href="/en/posts/2026-07-07_hello-world">en-US</a></nav><h1>mayi: o CLI educado que pede antes de mexer nos seus arquivos</h1>
+
+<tags style="display: none">go linux lowlevel</tags>
+
+<p>Uma coisa que sempre me incomodou em usar Linux é que os programas tem permissão muito ampla.</p>
+
+<p>Qualquer programa rodando no seu usuário pode ler suas credenciais, apagar sua home inteira, gravar seu som, tirar foto da câmera, desligar o pc... Só pra citar uns exemplos.</p>
+
+<p>Uma das coisas que gostei no Mac no pouco tempo que usei foi que quando um programa precisa acessar qualquer coisa mais sensível, o sistema solicita permissão do usuário.</p>
+
+<p style="display: flex; justify-content: center;"><img width="400px" src="https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/gkhkppyqx3v4ebrc4cma.png" alt="Mac solicitando permissão de acesso a câmera"/></p>
+
+<p>Eu procurei soluções similares para Linux, mas todas que achei geralmente se baseavam numa pré-configuração, e eu queria algo &#34;em runtime&#34; como é no Mac.</p>
+
+<p>Talvez exista e eu só não saiba buscar, mas de qualquer forma o projeto pessoal valeu a pena pelo aprendizado.</p>
+
+<p>Vou mostrar o <code>mayi</code> na prática, depois fazer um overview do funcionamento com trechos de código.</p>
+
+<p>Código: <a href="https://github.com/igorcafe/mayi">https://github.com/igorcafe/mayi</a></p>
+
+<h2>Exemplos</h2>
+
+<p>Ao rodar um programa que tenta ler um arquivo, o <code>mayi</code> interrompe esse programa e te pede permissão para lê-lo: </p>
+
+<pre>$ mayi bash steal_ssh.sh
+May I read your &#39;/home/igor/.ssh/id_rsa&#39;?
+[Y/n]: n
+cat: /home/igor/.ssh/id_rsa: Permission denied
+</pre>
+
+<p>O mesmo vale para rename:</p>
+
+<pre>$ mayi mv old new
+May I move or rename &#39;/home/igor/old&#39; to &#39;/home/igor/new&#39;?
+[Y/n]: 
+</pre>
+
+
+
+<p>E também para remoção:</p>
+
+<pre>$ mayi rm yourfile
+May I delete your &#39;/home/igor/yourfile&#39;?
+[Y/n]: n
+rm: cannot remove &#39;yourfile&#39;: Permission denied
+</pre>
+
+<blockquote>
+  <p>Obs.: o prompt por enquanto é feito via terminal, mas pretendo suportar alguma forma de popup também.</p>
+</blockquote>
+
+<p>E você também pode pré-configurar:</p>
+
+<pre># config global
+[*]
+/etc/.* = read write
+/run/.* = read write
+/var/.* = read write
+/usr/.* = read write
+
+# config por programa
+[emacs]
+$PWD/.* = read write
+$HOME = read
+$HOME/.gitconfig = read
+$HOME/\.emacs.* = read write
+</pre>
+
+<aside>Obs.: escrevendo isso eu pensei que seria uma boa implementar a questão de permissão de acesso ao microfone e câmera, que atualmente não tem.</aside>
+
+<h2 id="como-funciona">Como funciona</h2>
+
+<p>O <code>mayi</code> foi inicialmente escrito em C, porque foi o que encontrei mais recurso sobre e foi mais fácil de começar.</p>
+
+<p>A medida que fui adicionando mais coisas senti vontade de migrar pra Go para ficar mais fácil de desenvolver, e por enquanto foi uma boa decisão porque a stdlib do Go é muito completa para o que preciso.</p>
+
+<p>Agora para entendermos como o <code>mayi</code> funciona precisamos falar sobre algumas coisas primeiro...</p>
+
+<h3 id="o-que-s-o-system-calls">O que são system calls</h3>
+
+<p>O sistema operacional não te deixa acessar o hardware diretamente.</p>
+
+<p>Para acessar o hardware você precisa solicitar ao sistema operacional através de system calls, e você pode ler mais sobre isso <a href="https://dev.to/igormelo/como-o-kernel-impede-que-processos-executem-instrucoes-arbitrarias-de-cpu-1121">nesse meu outro post</a>.</p>
+
+<p>Através de system calls você consegue:</p>
+
+<ul>
+  <li>Criar processos e threads</li>
+  <li>Interagir com o sistema de arquivos</li>
+  <li>Alocar memória</li>
+  <li>Usar sockets para para comunicação via rede</li>
+  <li>Gerenciar usuários e permissões</li>
+</ul>
+
+<p>Só para citar alguns exemplos... O Linux tem praticamente 500 syscalls!</p>
+
+<p>O sistema operacional já gerencia as permissões por processo. Se um processo tenta apagar um arquivo que não pertence ao usuário dele e ele não tem permissão, essa operação vai falhar.</p>
+
+<p>O problema é que praticamente todos os programas e aplicações são rodadas por padrão no seu usuário, então elas podem fazer tudo que você pode fazer.</p>
+
+<p>Daí que entra o seccomp.</p>
+
+<h3>Seccomp</h3>
+
+<p>Seccomp (Security Computing Mode) é uma funcionalidade de segurança do Linux que permite controlar as system calls que um processo pode fazer.</p>
+
+<p>Você cria um mini programa usando <a href="https://en.wikipedia.org/wiki/Berkeley_Packet_Filter">BPF</a> para avaliar as system calls como quiser.
+  Você pode aprovar, recusar, ou até encerrar o processo. </p>
+
+<p>O interessante é que esse mini programa é um bytecode que roda em kernel space numa máquina virtual.
+  Por rodar em kernel space, isso faz com que ele seja muito rápido, por não ter que trocar de contexto pra user space pra cada system call.</p>
+
+<p>O filtro que eu uso atualmente é assim:</p>
+
+<pre>filter := []unix.SockFilter{     
+  // resumidamente, pega o número da syscall e guarda no registrador padrão                                   
+  bpfStmt(unix.BPF_LD|unix.BPF_W|unix.BPF_ABS, 0),                   
+        
+  // vá para linha abaixo se o número da syscall == SYS_OPEN, senão pula ela                                               
+  bpfJump(unix.BPF_JMP|unix.BPF_JEQ|unix.BPF_K, unix.SYS_OPEN, 0, 1),
+
+  // retorna que deve interceptar essa syscall (porque é SYS_OPEN)
+  bpfStmt(unix.BPF_RET|unix.BPF_K, unix.SECCOMP_RET_USER_NOTIF),     
+
+  // só chega aqui se syscall != SYS_OPEN
+  ...
+  
+  // se nenhum filtro se aplicar, aprova
+  bpfStmt(unix.BPF_RET|unix.BPF_K, unix.SECCOMP_RET_ALLOW),
+</pre>
+
+<p>O filtro é um pouco intimidador, porque ele é um assembly só que mais estranho, mas lendo com calma dá pra entender.</p>
+
+<h3>Decodificando as system calls</h3>
+
+<p>Não duvido que dá para fazer isso direto no BPF, mas nesse caso eu prefiro fazer isso pelo Go.</p>
+
+<p>Os dados da system call vem no seguinte formato:</p>
+
+<pre>type SeccompNotif struct {
+	ID    uint64       // identificador do request, não da syscall
+	Pid   uint32       // id do processo que fez a syscall
+	Flags uint32       // atualmente não é usado
+	Data  SeccompData  // veja abaixo
+}
+
+type SeccompData struct {
+	Nr   int32      // número da syscall, ex.: unix.SYS_OPEN
+	Arch uint32     // pra identificar a ABI (não uso, assumo x64)
+	IP   uint64     // endereço da instrução (não uso)
+	Args [6]uint64  // Argumentos da syscall
+}
+</pre>
+  
+<p>O <code>Args[6]</code> são os argumentos da syscall, que variam de acordo com a syscall sendo chamada e pela arquitetura em questão. 
+  A syscall é identificada pelo número <code>Nr</code>, que também varia por arquitetura.</p>
+
+<p>Cada syscall vai ser diferente. Alguns exemplos na arquitetura x86-64 são:</p>
+
+<table width="100%">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Número</th>
+      <th>Arg 0</th>
+      <th>Arg 1</th>
+      <th>Arg 2</th>
+      <th>Arg 3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>open</td>
+      <td>2</td>
+      <td>path (string)</td>
+      <td>flags (int32)</td>
+      <td>mode (int32)</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>openat</td>
+      <td>257</td>
+      <td>dirfd (int32)</td>
+      <td>path (string)</td>
+      <td>flags (int32)</td>
+      <td>mode (int32)</td>
+    </tr>
+    <tr>
+      <td>creat</td>
+      <td>85</td>
+      <td>path (string)</td>
+      <td>mode (int32)</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>O problema é que o arg do path é só um ponteiro para o início da string, e essa string não está na memória do nosso processo, e sim na do processo filho.</p>
+<p>Para ler essa memória eu usei a system call <code>process_vm_readv</code>.
+  Curiosos podem ver a função: </p>
+
+<pre>func readProcessString(pid int, addr uintptr) (string, error)
+</pre>
+
+<h3>O esquema de permissões</h3>
+
+<p>Eu chamei de <code>Intent</code> o que a syscall pretende fazer:</p>
+
+<pre>type Intent struct {
+	Program string
+	Actions []Action
+}
+
+type Action struct {
+	Path  string
+	Read  bool
+	Write bool
+}
+</pre>
+
+<p>Por exemplo, um <code>mv abc 123</code> tem o seguinte <code>Intent</code>:</p>
+
+<pre>return Intent{                                                                       
+        Program: &#34;mv&#34;,
+        Actions: []Action{                                                           
+                {                                                                    
+                        Path:  oldPath,                                              
+                        Read:  false,                                                
+                        Write: true,                                                 
+                },                                                                   
+                {                                                                    
+                        Path:  newPath,                                              
+                        Read:  false,                                                
+                        Write: true,                                                 
+                },                                                                   
+        },                                                                           
+}  
+</pre>
+
+<p>As configurações são parseadas de um arquivo .ini e seguem o formato:</p>
+
+<pre># regexp = perms...
+/nix/.* = read write
+$HOME/.ssh/.* = read:ask write:deny
+</pre>
+
+<p>A função <code>permForIntent</code> retorna uma permissão <code>PermDeny | PermAsk | PermAllow</code> dado um <code>Intent</code> e as configurações.</p>
+
+<p>Por exemplo, na configuração acima, se você passasse um <code>Intent</code> de deletar o <code>~/.ssh/id_rsa.pub</code>, ele iria retornar um <code>PermDeny</code>.</p>
+
+<h2>Conclusão</h2>
+
+<p>Tem mais coisas que eu poderia falar, tipo a comunicação entre supervisor e processo filho via socket, a transferência de file descriptor entre eles, mas acho que pode ficar pra um outro post.</p>
+</body></html>

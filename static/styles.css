@@ -1,0 +1,109 @@
+* {
+    font: inherit;
+    box-sizing: border-box;
+}
+
+body {
+    padding: 0 20px;
+    margin: 0 auto;
+    font-family: monospace;
+    font-size: 16px;
+    width: 100%;
+    max-width: 800px;
+}
+
+nav {
+    display: flex;
+    gap: 30px;
+    padding-top: 10px;
+}
+
+main {
+    background-color: white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+    padding-top: 20px;
+    /* text-transform: uppercase; */
+}
+
+h1 {
+    color: #000000;
+
+    &::before {
+	content: "# ";
+    }
+}
+
+h2 {
+    color: #624416;
+
+    &::before {
+	content: "## ";
+    }
+}
+
+h3 {
+    color: #193668;
+
+    &::before {
+	content: "### ";
+    }
+}
+
+a {
+    /* font-weight: bold; */
+    color: #193668;
+    text-decoration: underline;
+}
+
+a.link {
+    color: inherit;
+    text-decoration: none;
+}
+
+a.link:hover {
+    text-decoration: underline;
+}
+
+.tag {
+    padding: 3px;
+    background-color: #fff576aa;
+}
+
+code {
+    padding: 2px 5px;
+    border-radius: 5px;
+    background-color: #ccc3;
+}
+
+pre {
+    overflow-x: auto;
+    background-color: #5551;
+    padding: 10px;
+}
+
+.tag-list {
+    display: flex;
+    gap: 10px;
+}
+
+.tag-list a:hover {
+    text-decoration: underline;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th {
+    color: white;
+    font-weight: bold;
+    background-color: #193668ee;
+}
+
+th, td {
+    padding: 5px 10px;
+    border: 1px solid #0008;
+}
